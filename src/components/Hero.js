@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { lazy } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { Navigation, Pagination } from 'swiper'
+import { Navigation, Pagination, Autoplay, Lazy } from 'swiper'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
+import 'swiper/css/autoplay'
+import 'swiper/css/lazy'
 
 export default function Hero() {
     return (
@@ -13,10 +15,12 @@ export default function Hero() {
                 <h3 className="text-center mt-2 text-white tracking-wide">Hiking footwear for viking</h3>
             </div>
             <Swiper
-                modules={[Navigation, Pagination]}
+                modules={[Navigation, Pagination, Autoplay, Lazy]}
                 slidesPerView={1}
                 spaceBetween={50}
                 navigation
+                autoplay
+                lazy
                 pagination={{ clickable: true }}
             >
                 <SwiperSlide><div className="slide-1 slide"></div></SwiperSlide>

@@ -1,4 +1,5 @@
 import React from 'react'
+import Footer from './Footer';
 import Header from "./Header";
 import Hero from "./Hero";
 import ImageGrid from './ImageGrid';
@@ -20,6 +21,7 @@ export default function Home() {
             <ProductShowcase tags={['performance']} numberToShow={4} hasButton={true} buttonText={'Shop All Active Outdoors'} />
             <Testimonials />
             <ImageGrid />
+            <Footer />
         </div>
     )
 }

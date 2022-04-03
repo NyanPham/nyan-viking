@@ -7,7 +7,7 @@ import ImageGridCell from './ImageGridCell'
 
 export default function ImageGrid() {
     return (
-        <div className="grid grid-cols-4 grid-rows-2 w-full h-96 gap-3 mt-3">
+        <div className="grid grid-cols-4 grid-rows-2 w-full h-96 gap-3 p-3">
             <div className="col-span-2 row-span-2 bg-gray-500">
                 <ImageGridCell image={BootsOnRock} title={"Powerful"} description={'Our boots will boost your power on uneven rocks'}/>
             </div>

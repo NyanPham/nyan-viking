@@ -111,7 +111,7 @@ export const PRODUCTS = [
 
 function App() {
 	return (
-		<div className="pb-36">
+		<div className="">
 			<Routes>
 				<Route path="/" element={<Home /> } />
 			</Routes>

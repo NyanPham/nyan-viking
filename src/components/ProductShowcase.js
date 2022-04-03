@@ -29,7 +29,7 @@ export default function ProductShowcase({ tags, numberToShow = null, hasButton =
                 ))}
             </div>
             {hasButton && (
-                <button className="px-4 py-2 mt-5 border italic border-gray-900 bg-transparent text-gray-900 mx-auto block">{buttonText}</button>
+                <button className="px-4 py-2 mt-5 border italic border-gray-900 bg-transparent text-gray-900 mx-auto block hover:bg-gray-900 hover:text-gray-200 hover:-translate-y-0.5 transform transition">{buttonText}</button>
             )}
         </>
         

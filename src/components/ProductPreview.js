@@ -45,18 +45,18 @@ export default function ProductPreview(product) {
                     })}
                 </div>
             </div>
-            <div className="mt-7 flex flex-col justify-between items-center">
-                <div className="w-36 h-36">
+            <div className="flex flex-col justify-between items-center h-full">
+                <div className="w-32 h-32 mt-5">
                     <img src={bootImage} alt={name} className="max-w-full max-h-full" />
                 </div>
                 <div className="w-full">
-                    <h3 className="text-center text-gray-900 text-xl font-semibold">
+                    <h3 className="text-center text-gray-900 text-lg font-semibold">
                         {name}
                     </h3>
-                    <p className="text-center text-gray-900 italic text-md">
+                    <p className="text-center text-gray-900 italic text-base">
                         {description}
                     </p>
-                    <h3 className="text-xl text-center">${price}</h3>
+                    <h3 className="text-lg text-center">${price}</h3>
                 </div>
             </div>
             <div className="absolute inset-0 bg-transparent flex justify-center items-center pointer-events-none group-hover:bg-sky-900/30 group-hover:pointer-events-auto transform transition duration-500">
