@@ -4,14 +4,14 @@ import Header from "./Header";
 import Hero from "./Hero";
 import ImageGrid from './ImageGrid';
 import Policies from "./Policies";
-import ProductShowcase from './ProductShowcase';
+import ProductShowcase from './Product/ProductShowcase';
 import RandomBanner from './RandomBanner';
 import Testimonials from './Testimonials';
 
-export default function Home() {
+export default function Home({ documentRef }) {
     return (
         <div className="relative">
-            <Header />
+            <Header documentRef={documentRef}/>
             <Hero />
             <Policies />
             <h2 className="product-showcase-title">Our Picks For Active</h2>

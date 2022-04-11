@@ -1,5 +1,15 @@
 import Home from './Home'
 import { Routes, Route } from 'react-router-dom'
+import SignUp from './authentication/SignUp';
+import { useDispatch } from 'react-redux';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase';
+import { removeUser, setUser } from '../redux/actions/userActions';
+import LogIn from './authentication/LogIn';
+import { useRef } from 'react';
+import ForgotPassword from './authentication/ForgotPassword';
+import Profile from './authentication/Profile';
+import UpdateProfile from './authentication/UpdateProfile';
 
 export const PRODUCTS = [
 	{
@@ -110,10 +120,26 @@ export const PRODUCTS = [
 ]
 
 function App() {
+	const documentRef = useRef()
+	const dispatch = useDispatch()
+
+	onAuthStateChanged(auth, user => {
+		if (user) {
+			dispatch(setUser(user))
+		} else {
+			dispatch(removeUser())
+		}
+	})
+
 	return (
-		<div className="">
+		<div className="" ref={documentRef}>
 			<Routes>
-				<Route path="/" element={<Home /> } />
+				<Route path="/" element={<Home documentRef={documentRef} />} />
+				<Route path="/signup" element={<SignUp />} />
+				<Route path="/login" element={<LogIn />} />
+				<Route path="/forgot-password" element={<ForgotPassword />} />
+				<Route path="/update-profile" element={<UpdateProfile />} />
+				<Route path="/profile" element={<Profile />} />
 			</Routes>
 		</div>
 	);
