@@ -1,10 +1,14 @@
 import ACTIONS from "../actions/userActions";
+import { capitalize } from '../../helper'
 
 const initialState = {
     currentUser: null,
     loading: false,
     error: '',
     message: '',
+    errors: [],
+    messages: [],
+    accountConfirmed: false
 }
 
 export function userReducer(state = initialState, { type, payload }) {
@@ -23,11 +27,16 @@ export function userReducer(state = initialState, { type, payload }) {
         case ACTIONS.USER_LOGIN_START:
         case ACTIONS.USER_LOGOUT_START:
         case ACTIONS.USER_RESET_PASSWORD_START:
+        case ACTIONS.USER_UPDATE_START:
+        case ACTIONS.USER_CONFIRM_ACCOUNT_START:
             return {
                 ...state,
                 loading: true,
                 message: '',
-                error: ''
+                error: '',
+                errors: [],
+                messages: [],
+                accountConfirmed: false
             }
         case ACTIONS.USER_SIGNUP_SUCCESS: 
         case ACTIONS.USER_LOGIN_SUCCESS: 
@@ -41,6 +50,12 @@ export function userReducer(state = initialState, { type, payload }) {
                 ...state,
                 loading: false,
                 message: 'We have sent you an email to reset your password. Check your inbox for further instruction.'
+            }
+        case ACTIONS.USER_CONFIRM_ACCOUNT_SUCCESS: 
+            return {
+                ...state,
+                loading: false,
+                accountConfirmed: true
             }
         case ACTIONS.USER_SIGNUP_FAIL:
             return {
@@ -66,11 +81,39 @@ export function userReducer(state = initialState, { type, payload }) {
                 loading: false,
                 error: 'Failed to reset password. Please check your email address then try again.'
             }
+        case ACTIONS.USER_CONFIRM_ACCOUNT_FAIL: 
+            return {
+                ...state,
+                loading: false,
+                error: 'Failed to authorize you to update the profile. Check your account email address and password then try again.'
+            }
         case ACTIONS.RESET_ERROR_AND_MESSAGE:
             return {
                 ...state,
                 error: '',
                 message: ''
+            }
+        case ACTIONS.USER_UPDATE_SUCCESS: 
+            return {
+                ...state,
+                loading: false,
+                message: 'Your profile has been updated',
+            }
+        case ACTIONS.USER_UPDATE_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: "Failed to update your profile"
+            }
+        case ACTIONS.SET_UPDATE_ERROR:
+            return {
+                ...state,
+                errors: [...state.errors, `Failed to update ${payload.field}`]
+            }
+        case ACTIONS.SET_UPDATE_MESSAGE:
+            return {
+                ...state,
+                messages: [...state.messages, `${capitalize(payload.field)} has been updated`]
             }
         default: 
             return state

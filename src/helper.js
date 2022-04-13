@@ -8,3 +8,11 @@ export function shuffleItems(items) {
     }
     return shuffledItems
 }
+
+export function capitalize(string) {
+    const letters = string.split('')
+    return [
+        letters[0].toUpperCase(),
+        ...letters.slice(1)
+    ].join('')
+}
