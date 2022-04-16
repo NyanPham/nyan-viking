@@ -1,4 +1,4 @@
-import { auth } from "../../firebase"
+import { auth, db } from "../../firebase"
 import { 
     createUserWithEmailAndPassword, 
     sendPasswordResetEmail,
@@ -9,9 +9,13 @@ import {
     updateProfile
 } from "firebase/auth"
 
+import { addDoc, doc, collection, getDocs, where, query, updateDoc } from 'firebase/firestore'
+import { formatDoc } from "../../helper"
+
 const ACTIONS = {
     SET_USER: 'set-user',
     REMOVE_USER: 'remove-user',
+    GET_USER_INFO: 'get-user-info',
 
     USER_SIGNUP_START: 'user-signup-start',
     USER_SIGNUP_FAIL: 'user-signup-fail',
@@ -63,6 +67,13 @@ export function signUp(email, password) {
         try {
             dispatch({ type: ACTIONS.USER_SIGNUP_START })
             await createUserWithEmailAndPassword(auth, email, password)
+            await addDoc(collection(db, 'userProfile'), {
+                userId: auth.currentUser.uid,
+                firstName: '',
+                lastName: '',
+                address: '',
+                phoneNUmber: ''
+            })
             dispatch({ type: ACTIONS.USER_SIGNUP_SUCCESS })
         } catch {
             dispatch({ type:ACTIONS.USER_SIGNUP_FAIL })
@@ -118,23 +129,38 @@ export function confirmAccount(email, password) {
     }
 }
 
-export function userUpdateProfileInfo(email, password, firstName, lastName, displayName, address, phone) {
-    console.log('here')
+export function userUpdateProfileInfo(email, password, firstName, lastName, displayName, address, phone, userId) {
     return async (dispatch) => {
         try {
             dispatch({ type: ACTIONS.USER_UPDATE_START })
-            let items = []
+            const items = []
             
             if (email.changed) {
-                items.push({ name: 'email', promise: updateEmail(auth.currentUser, email.value)})
+                items.push({ name: 'email', value: email.changed , promise: updateEmail(auth.currentUser, email.value)})
             }
 
             if (password.changed) {
-                items.push({ name: 'password', promise: updatePassword(auth.currentUser, password.value)})
+                items.push({ name: 'password', value: password.value, promise: updatePassword(auth.currentUser, password.value)})
             }
             
             if (displayName.changed) {
-                items.push({ name: 'displayName', promise: updateProfile(auth.currentUser, { displayName: displayName.value })})
+                items.push({ name: 'displayName', value: displayName.value , promise: updateProfile(auth.currentUser, { displayName: displayName.value })})
+            }
+
+            if (firstName.changed) {
+                items.push({ name: 'firstName', value: firstName.value , promise: userUpdateOtherInfo(userId, 'firstName', firstName.value) })
+            }
+
+            if (lastName.changed) {
+                items.push({ name: 'lastName', value: lastName.value , promise: userUpdateOtherInfo(userId, 'lastName', lastName.value) })
+            }
+
+            if (address.changed) {
+                items.push({ name: 'address', value: address.value , promise: userUpdateOtherInfo(userId, 'address', address.value) })
+            }
+            
+            if (phone.changed) {
+                items. push({ name: 'phoneNumber', value: phone.value, promise: userUpdateOtherInfo(userId, 'phoneNumber', phone.value) })
             }
             
             const updatingItems = items.map(item => item.promise)
@@ -142,10 +168,17 @@ export function userUpdateProfileInfo(email, password, firstName, lastName, disp
             const results = await Promise.allSettled(updatingItems)
             results.forEach((result, index) => {
                 const field = items[index].name
+                const value = items[index].value
                 if (result.status === 'fulfilled') {
-                    dispatch({ type: ACTIONS.SET_UPDATE_MESSAGE, payload: { field }})
+                    dispatch({ 
+                        type: ACTIONS.SET_UPDATE_MESSAGE, 
+                        payload: { field, value }
+                    })
                 } else {
-                    dispatch({ type: ACTIONS.SET_UPDATE_ERROR, payload: { field }})
+                    dispatch({ 
+                        type: ACTIONS.SET_UPDATE_ERROR, 
+                        payload: { field }
+                    })
                 }
             })
 
@@ -157,71 +190,14 @@ export function userUpdateProfileInfo(email, password, firstName, lastName, disp
     }
 }
 
-export function userUpdateEmail(email) {
-    return async (dispatch) => {
-        try {
-            dispatch({ type: ACTIONS.USER_UPDATE_START })
-            await updateEmail(auth, email)
-            dispatch({ 
-                type: ACTIONS.USER_UPDATE_SUCCESS,
-                payload: {
-                    field: 'email'
-                } 
-            })
-        } catch {
-            dispatch({
-                type: ACTIONS.USER_UPDATE_FAIL,
-                payload: {
-                    field: 'email'
-                }
-            })
-        }
-    }
-}
-
-export function userUpdatePassword(password) {
-    return async (dispatch) => {
-        try {
-            dispatch({ type: ACTIONS.USER_UPDATE_START })
-            await updatePassword(auth, password)
-            dispatch({ 
-                type: ACTIONS.USER_UPDATE_SUCCESS,
-                payload: {
-                    field: 'password'
-                } 
-            })
-        } catch {
-            dispatch({
-                type: ACTIONS.USER_UPDATE_FAIL,
-                payload: {
-                    field: 'password'
-                }
-            })
-        }
-    }
-}
-
-export function userUpdateDisplayName(displayName) {
-    return async (dispatch) => {
-        try {
-            dispatch({ type: ACTIONS.USER_UPDATE_START })
-            await updateProfile(auth, {
-                displayName: displayName
-            })
-            dispatch({ 
-                type: ACTIONS.USER_UPDATE_SUCCESS,
-                payload: {
-                    field: 'display-name'
-                } 
-            })
-        } catch {
-            dispatch({
-                type: ACTIONS.USER_UPDATE_FAIL,
-                payload: {
-                    field: 'display-name'
-                }
-            })
-        }
+async function userUpdateOtherInfo(userId, field, value) {
+    const q = query(collection(db, 'userProfile'), where('userId', '==', userId))
+    const existingDocs = await getDocs(q)
+    const existingDoc = existingDocs.docs[0]
+    if (existingDoc) {
+        return updateDoc(doc(db, 'userProfile', existingDoc.id), {
+            [field]: value
+        })
     }
 }
 
@@ -231,6 +207,103 @@ export function resetErrorsAndMessages() {
     }
 }
 
+export function getUserProfileInfo(userId) {
+    return async (dispatch) => {
+        try {
+            const q = query(collection(db, 'userProfile'), where('userId', '==', userId))
+            const existingDocs = await getDocs(q)
+            const existingDoc = existingDocs.docs[0]
+            if (existingDoc) {
+                const userInfo = formatDoc(existingDoc)
+                dispatch({
+                    type: ACTIONS.GET_USER_INFO,
+                    payload: {
+                        userOtherInfo: userInfo
+                    }
+                })
+            } else {
+                dispatch({ 
+                    type: ACTIONS.GET_USER_INFO,
+                    payload: {
+                        userOtherInfo: {}
+                    }
+                })
+            }
+        } catch (error) {
+            console.error(error.message)
+        }
+    }
+}
+
 
 
 export default ACTIONS
+
+
+// export function userUpdateEmail(email) {
+//     return async (dispatch) => {
+//         try {
+//             dispatch({ type: ACTIONS.USER_UPDATE_START })
+//             await updateEmail(auth, email)
+//             dispatch({ 
+//                 type: ACTIONS.USER_UPDATE_SUCCESS,
+//                 payload: {
+//                     field: 'email'
+//                 } 
+//             })
+//         } catch {
+//             dispatch({
+//                 type: ACTIONS.USER_UPDATE_FAIL,
+//                 payload: {
+//                     field: 'email'
+//                 }
+//             })
+//         }
+//     }
+// }
+
+// export function userUpdatePassword(password) {
+//     return async (dispatch) => {
+//         try {
+//             dispatch({ type: ACTIONS.USER_UPDATE_START })
+//             await updatePassword(auth, password)
+//             dispatch({ 
+//                 type: ACTIONS.USER_UPDATE_SUCCESS,
+//                 payload: {
+//                     field: 'password'
+//                 } 
+//             })
+//         } catch {
+//             dispatch({
+//                 type: ACTIONS.USER_UPDATE_FAIL,
+//                 payload: {
+//                     field: 'password'
+//                 }
+//             })
+//         }
+//     }
+// }
+
+// export function userUpdateDisplayName(displayName) {
+//     return async (dispatch) => {
+//         try {
+//             dispatch({ type: ACTIONS.USER_UPDATE_START })
+//             await updateProfile(auth, {
+//                 displayName: displayName
+//             })
+//             dispatch({ 
+//                 type: ACTIONS.USER_UPDATE_SUCCESS,
+//                 payload: {
+//                     field: 'display-name'
+//                 } 
+//             })
+//         } catch {
+//             dispatch({
+//                 type: ACTIONS.USER_UPDATE_FAIL,
+//                 payload: {
+//                     field: 'display-name'
+//                 }
+//             })
+//         }
+//     }
+// }

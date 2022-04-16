@@ -16,3 +16,16 @@ export function capitalize(string) {
         ...letters.slice(1)
     ].join('')
 }
+
+export function formatDoc(doc) {
+    return {
+        id: doc.id,
+        ...doc.data()
+    }
+}
+
+export function camelCaseToWords(camelCasedWords) {
+    const result = camelCasedWords.replace( /([A-Z])/g, " $1" )
+    const words = result.charAt(0).toUpperCase() + result.slice(1)
+    return words
+}

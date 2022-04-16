@@ -8,7 +8,8 @@ const initialState = {
     message: '',
     errors: [],
     messages: [],
-    accountConfirmed: false
+    accountConfirmed: false,
+    userOtherInfo: {}
 }
 
 export function userReducer(state = initialState, { type, payload }) {
@@ -22,6 +23,11 @@ export function userReducer(state = initialState, { type, payload }) {
             return {
                 ...state,
                 currentUser: null
+            }
+        case ACTIONS.GET_USER_INFO:
+            return {
+                ...state,
+                userOtherInfo: payload.userOtherInfo
             }
         case ACTIONS.USER_SIGNUP_START:
         case ACTIONS.USER_LOGIN_START:
@@ -108,12 +114,16 @@ export function userReducer(state = initialState, { type, payload }) {
         case ACTIONS.SET_UPDATE_ERROR:
             return {
                 ...state,
-                errors: [...state.errors, `Failed to update ${payload.field}`]
+                errors: [...state.errors, `${payload.field}`]
             }
         case ACTIONS.SET_UPDATE_MESSAGE:
             return {
                 ...state,
-                messages: [...state.messages, `${capitalize(payload.field)} has been updated`]
+                messages: [...state.messages, `${capitalize(payload.field)}`],
+                userOtherInfo: {
+                    ...state.userOtherInfo,
+                    [payload.field]: payload.value
+                }
             }
         default: 
             return state

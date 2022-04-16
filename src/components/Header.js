@@ -11,7 +11,7 @@ import { logOut } from '../redux/actions/userActions'
 
 export default function Header({ documentRef }) {
     const [userOpen, setUserOpen] = useState(false)
-    const {currentUser, loading, error} = useSelector(state => state.userStatus) 
+    const {currentUser, loading, error, userOtherInfo} = useSelector(state => state.userStatus) 
     const dispatch = useDispatch()
     const { ref: headerRef, inView } = useInView({
         threshold: 0.5
@@ -66,7 +66,7 @@ export default function Header({ documentRef }) {
                             <div className="relative" data-user>
                                 <div className="cursor-pointer group" onClick={() => setUserOpen(prevOpen => !prevOpen)}>
                                     <FontAwesomeIcon icon={faUserCircle} className="text-xl text-white group-hover:-translate-y-0.5 group-hover:text-sky-300 transform transition" />
-                                    <span className="text-white uppercase ml-3 tracking-wide group-hover:text-sky-300">User</span>
+                                    <span className="text-white uppercase ml-3 tracking-wide group-hover:text-sky-300">{userOtherInfo.firstName ? userOtherInfo.firstName : 'User'}</span>
                                 </div>
                                 <div className={`${userOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-1 pointer-events-none'} flex flex-col items-center absolute top-full left-0 bg-white rounded-sm transform transition shadow-lg`}>
                                     <Link to="/profile" className="w-full py-3 px-4 border-b border-gray-500 hover:bg-gray-300 transition">Profile</Link>
@@ -107,7 +107,7 @@ export default function Header({ documentRef }) {
                             <div className="relative" data-user>
                                 <div className="cursor-pointer group" onClick={() => setUserOpen(prevOpen => !prevOpen)}>
                                     <FontAwesomeIcon icon={faUserCircle} className="text-xl text-gray-900 group-hover:-translate-y-0.5 group-hover:text-sky-300 transform transition" />
-                                    <span className="text-gray-900 uppercase ml-3 tracking-wide group-hover:text-sky-300">User</span>
+                                    <span className="text-gray-900 uppercase ml-3 tracking-wide group-hover:text-sky-300">{userOtherInfo.firstName ? userOtherInfo.firstName : 'User'}</span>
                                 </div>
                                 <div className={`${userOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-1 pointer-events-none'} flex flex-col items-center absolute top-full left-0 bg-white rounded-sm transform transition shadow-2xl border border-gray-300`}>
                                     <Link to="/profile" className="w-full py-3 px-4 border-b border-gray-500 hover:bg-gray-300 transition">Profile</Link>

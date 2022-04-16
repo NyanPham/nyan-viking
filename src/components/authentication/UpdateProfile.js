@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
-import { confirmAccount, logIn, logOut, userUpdateProfileInfo } from '../../redux/actions/userActions'
+import { confirmAccount, userUpdateProfileInfo } from '../../redux/actions/userActions'
+import { camelCaseToWords } from '../../helper'
+import { Link } from 'react-router-dom'
 
 export default function UpdateProfile() {
     const [currentPageIndex, setCurrentPageIndex] = useState(0)
@@ -22,9 +24,8 @@ export default function UpdateProfile() {
     const accountConfirmEmailRef = useRef()
     const accountConfirmPasswordRef = useRef()
 
-    const { currentUser, error, accountConfirmed, loading, errors, messages } = useSelector(state => state.userStatus)
+    const { currentUser, error, accountConfirmed, loading, errors, messages, userOtherInfo } = useSelector(state => state.userStatus)
     const dispatch = useDispatch()
-
 
     const STEPS = [
         {
@@ -69,7 +70,7 @@ export default function UpdateProfile() {
                     type: 'text',
                     ref: firstNameRef,
                     placeholder: '',
-                    defaultValue: null
+                    defaultValue: userOtherInfo?.firstName || ''
                 },
                 {
                     label: 'Last Name',
@@ -77,7 +78,7 @@ export default function UpdateProfile() {
                     type: 'text',
                     ref: lastNameRef,
                     placeholder: '',
-                    defaultValue: null
+                    defaultValue: userOtherInfo?.lastName || ''
                 },
                 {
                     label: 'Display Name',
@@ -111,7 +112,7 @@ export default function UpdateProfile() {
                     type: 'text',
                     ref: addressRef,
                     placeholder: '',
-                    defaultValue: null
+                    defaultValue: userOtherInfo?.address || ''
                 },
                 {
                     label: 'Phone Number',
@@ -119,7 +120,7 @@ export default function UpdateProfile() {
                     type: 'tel',
                     ref: phoneRef,
                     placeholder: '',
-                    defaultValue: null
+                    defaultValue: userOtherInfo?.phoneNumber || ''
                 }
             ],
             buttons: [
@@ -141,9 +142,10 @@ export default function UpdateProfile() {
     useEffect(() => {
         if (accountConfirmed && error === '') {
             handleUpdateProfile()
+            setConfirmOpen(false)
         }
 
-    }, [error, accountConfirmed])
+    }, [error, accountConfirmed, handleUpdateProfile])
 
     function handleSubmitClick(e) {
         e.preventDefault()
@@ -161,10 +163,13 @@ export default function UpdateProfile() {
     }
 
     function handleUpdateProfile() {
-
         let email = { changed: false, value: '' }
         let password = { changed: false, value: '' }
         let displayName = { changed: false, value: '' }
+        let firstName = { changed: false, value: '' }
+        let lastName = { changed: false, value: '' } 
+        let address = { changed: false, value: '' }
+        let phoneNumber = { changed: false, value: '' }
 
         if (emailRef.current.value !== currentUser.email) {
             email = { changed: true, value: emailRef.current.value }
@@ -174,12 +179,27 @@ export default function UpdateProfile() {
             password = { changed: true, value: passwordRef.current.value }
         }
 
-        if (displayNameRef.current.value !== '' ) {
+        if (displayNameRef.current.value !== '' && displayNameRef.current.value !== currentUser.displayName) {
             displayName = { changed: true, value: displayNameRef.current.value }
         }
 
-        console.log('here')
-        dispatch(userUpdateProfileInfo(email, password, null, null, displayName, null, null))
+        if (firstNameRef.current.value !== '' && firstNameRef.current.value !== userOtherInfo.firstName) {
+            firstName= { changed: true, value: firstNameRef.current.value }
+        }
+
+        if (lastNameRef.current.value !== '' && lastNameRef.current.value !== userOtherInfo.lastName) {
+            lastName = { changed: true, value: lastNameRef.current.value }
+        }
+
+        if (addressRef.current.value !== '' && addressRef.current.value !== userOtherInfo.address) {
+            address = { changed: true, value: addressRef.current.value }
+        }
+        
+        if (phoneRef.current.value !== '' && phoneRef.current.value !== userOtherInfo.phoneNumber) {
+            phoneNumber = { changed: true, value: phoneRef.current.value }
+        }
+
+        dispatch(userUpdateProfileInfo(email, password, firstName, lastName, displayName, address, phoneNumber, currentUser.uid))
     }
 
     function handleStepButtonClick(buttonType, buttonAction) {
@@ -197,19 +217,29 @@ export default function UpdateProfile() {
     }
 
     return (
-        <div className="auth-page w-screen h-screen flex flex-col relative overflow-clip">
+        <div className="auth-page pb-7 w-screen min-h-screen flex flex-col relative overflow-clip relative">
+            <Link to="/" className="auth-btn absolute top-5 left-5">Back</Link>
             <h2 className="text-2xl font-semibold text-gray-100 tracking-wide mt-20 text-center">Update Profile</h2>
             <div className='w-96 mx-auto mt-3'>
-                {passwordMatchError && <p className="py-2 px-3 font-semibold text-sm bg-red-300 text-red-600 mb-5">{passwordMatchError}</p>}
-                {error && <p className="py-2 px-3 mt-7 font-semibold text-sm bg-red-300 text-red-600 mb-5">{error}</p>}
-                {errors.length > 0 && errors.map((error, index) => (
-                    <p key={`update_error_${index}`} className="py-2 px-3 font-semibold text-sm bg-red-300 text-red-600 mb-5">{error}</p>
-                ))}
-                {messages.length > 0 && messages.map((message, index) => (
-                    <p key={`update_message_${index}`} className="py-2 px-3 font-semibold text-sm bg-green-300 text-green-600 mb-5">{message}</p>
-                ))}
+                {passwordMatchError && <p className="error-alert">{passwordMatchError}</p>}
+                {error && <p className="error-alert">{error}</p>}
+                {errors.length > 0 && (
+                    <p className="error-alert">
+                        {errors.map((error, index) => (
+                            <span key={`update_error_${index}`}>{index === 0 ? '' : ', '}{camelCaseToWords(error)}</span>
+                        ))}
+                    </p>
+                )}
+                {messages.length > 0 && (
+                    <p className="success-alert">
+                        Fields Updated: 
+                        {messages.map((message, index) => (
+                            <span key={`update_message_${index}`}>{index === 0 ? ' ' : ', '}{camelCaseToWords(message)}</span>
+                        ))}
+                    </p>
+                )}
             </div>
-            <div className="mt-12 flex gap-12 justify-center items-center">
+            <div className="mt-5 flex gap-12 justify-center items-center">
                 {STEPS.map((step, index) => (
                     <div 
                         className={`w-24 h-25 border border-gray-100 rounded-sm grid place-items-center cursor-pointer hover:text-sky-900 hover:bg-white transition duration-500 ${index === currentPageIndex ? 'text-sky-900 bg-white' : 'bg-transparent text-white'} relative ${index === STEPS.length - 1 ? '' : 'after:content-[""] after:absolute after:top-1/2 after:-translate-y-1/2 after:left-full after:w-12 after:h-0.5 after:bg-white'}`} 
@@ -259,27 +289,24 @@ export default function UpdateProfile() {
                     </form>
                 </div>
             </div>
+            <div className={`${confirmOpen ? '-translate-y-0 opacity-100 pointer-events-auto' : '-translate-y-1 opacity-0 pointer-events-none'} fixed inset-0 bg-gray-900/90 flex justify-center items-center transform transition duration-500`} onClick={handleConfirmLayerClick}>
+                <form className="w-2/5 py-4 px-7 bg-white rounded-sm" data-account-confirm-form onSubmit={handleConfirmSubmit}>
+                    <h2 className="text-center text-lg font-semibold">Just a minute!</h2>
+                    <p className="text-center text-sm font-thin">Let us know it's really you before updating your profile</p>
+                    <div className="form-group mt-7">
+                        <label className='form-label text-gray-900' htmlFor='account-confirm-email'>Email:</label>
+                        <input className="form-input text-gray-900 border-gray-900" type="email" id='account-confirm-email' required ref={accountConfirmEmailRef} />
+                    </div>
+                    <div className="form-group mt-7">
+                        <label className='form-label text-gray-900' htmlFor='account-confirm-password'>password:</label>
+                        <input className="form-input text-gray-900 border-gray-900" type="password" required ref={accountConfirmPasswordRef} />
+                    </div>
+                    <button type="submit" className="submit-btn mt-7">Confirm</button>
+                </form>
+            </div>
             {loading && 
                 <div className="fixed inset-0 bg-gray-900/90 flex justify-center items-center z-10">
                     <FontAwesomeIcon icon={faSpinner} className="animate-spin text-5xl text-sky-500"/>
-                </div>
-            }
-
-            {confirmOpen &&
-                <div className="fixed inset-0 bg-gray-900/90 flex justify-center items-center" onClick={handleConfirmLayerClick}>
-                    <form className="w-2/5 py-4 px-7 bg-white rounded-sm" data-account-confirm-form onSubmit={handleConfirmSubmit}>
-                        <h2 className="text-center text-lg font-semibold">Just a minute!</h2>
-                        <p className="text-center text-sm font-thin">Let us know it's really you before updating your profile</p>
-                        <div className="form-group mt-7">
-                            <label className='form-label text-gray-900' htmlFor='account-confirm-email'>Email:</label>
-                            <input className="form-input text-gray-900 border-gray-900" type="email" id='account-confirm-email' required ref={accountConfirmEmailRef} />
-                        </div>
-                        <div className="form-group mt-7">
-                            <label className='form-label text-gray-900' htmlFor='account-confirm-password'>password:</label>
-                            <input className="form-input text-gray-900 border-gray-900" type="password" required ref={accountConfirmPasswordRef} />
-                        </div>
-                        <button type="submit" className="submit-btn mt-7">Confirm</button>
-                    </form>
                 </div>
             }
         </div>

@@ -1,17 +1,45 @@
 import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { shuffleItems } from '../../helper';
-import { PRODUCTS } from '../App';
+
 import ProductPreview from './ProductPreview';
 
-export default function ProductShowcase({ tags, numberToShow = null, hasButton = false, buttonText = 'Shop Now' }) {
-    const [productsToShow, setProductsToShow] = useState([])
+export default function ProductShowcase(props) {
+    const {
+        category, 
+        collections, 
+        tags, 
+        numberToShow = null, 
+        hasButton = false, 
+        buttonText = 'Shop Now' 
+    } = props
     
+    const [productsToShow, setProductsToShow] = useState([])
+    const products = useSelector(state => state.productStatus.products)
+
     useEffect(() => {
-        let targetedProducts = PRODUCTS.filter(product => {
-            return product.tags.some(tag => {
-                return tags.includes(tag)
+        let targetedProducts = products
+        
+        if (tags) {
+            targetedProducts = targetedProducts.filter(product => {
+                return product.tags.some(tag => {
+                    return tags.includes(tag)
+                })
             })
-        })
+        }
+
+        if (category) {
+            targetedProducts = targetedProducts.filter(product => product.category === category)
+        }
+
+        if (collections) {
+            targetedProducts =  targetedProducts.filter(product => {
+                return product.collections.some(collection => {
+                    return collections.includes(collection)
+                })
+            })
+        }
+        
         
         if (numberToShow != null) {
             targetedProducts = shuffleItems(targetedProducts)
@@ -19,7 +47,7 @@ export default function ProductShowcase({ tags, numberToShow = null, hasButton =
         }
 
         setProductsToShow(targetedProducts)
-    }, [])
+    }, [products])
 
     return (
         <>

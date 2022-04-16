@@ -73,11 +73,11 @@
     }
 
     .form-label {
-        @apply text-white
+        @apply text-white font-semibold
     }
 
     .form-input {
-        @apply text-white py-1 px-2 outline-none border-b border-white bg-transparent focus:border-b-2 transform transition
+        @apply text-white py-1 px-2 outline-none border-b border-white bg-transparent focus:border-b-2 transform transition placeholder:text-base
     }
 
     .submit-btn {
@@ -86,5 +86,13 @@
 
     .auth-btn {
         @apply text-gray-100 py-2 px-3 border border-gray-100 rounded-md hover:bg-gray-100 hover:text-gray-900 hover:-translate-y-1 hover:shadow-lg transform transition
+    }
+
+    .error-alert {
+        @apply py-2 px-3 font-semibold text-sm bg-red-300 text-red-600 mb-5 rounded-sm
+    }
+
+    .success-alert {
+        @apply py-2 px-3 font-semibold text-sm bg-green-300 text-green-600 mb-5 rounded-sm
     }
 }

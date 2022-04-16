@@ -1,15 +1,18 @@
+import { useEffect } from 'react';
 import Home from './Home'
 import { Routes, Route } from 'react-router-dom'
 import SignUp from './authentication/SignUp';
 import { useDispatch } from 'react-redux';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
-import { removeUser, setUser } from '../redux/actions/userActions';
+import { getUserProfileInfo, removeUser, setUser } from '../redux/actions/userActions';
 import LogIn from './authentication/LogIn';
 import { useRef } from 'react';
 import ForgotPassword from './authentication/ForgotPassword';
 import Profile from './authentication/Profile';
 import UpdateProfile from './authentication/UpdateProfile';
+import PRODUCT_ACTIONS from '../redux/actions/productActions';
+import { getProducts } from '../redux/actions/productActions';
 
 export const PRODUCTS = [
 	{
@@ -123,9 +126,14 @@ function App() {
 	const documentRef = useRef()
 	const dispatch = useDispatch()
 
+	useEffect(() => {
+        dispatch(getProducts())
+    }, [dispatch])
+
 	onAuthStateChanged(auth, user => {
 		if (user) {
 			dispatch(setUser(user))
+			dispatch(getUserProfileInfo(user.uid))
 		} else {
 			dispatch(removeUser())
 		}

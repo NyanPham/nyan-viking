@@ -23,8 +23,8 @@ export default function ForgotPassword() {
             <div className="mt-8 flex justify-center items-start gap-7 grow">
                 <div className="flex justify-center items-center w-1/3">
                     <form className="form p-7 bg-gray-900 flex-col rounded-lg w-4/5" onSubmit={handleResetPassword}>
-                        {error && <p className="py-2 px-3 font-semibold text-sm bg-red-300 text-red-600 mb-5">{error}</p>}
-                        {message && <p className="py-2 px-3 font-semibold text-sm bg-green-300 text-green-600 mb-5">{message}</p>}
+                        {error && <p className="error-alert">{error}</p>}
+                        {message && <p className="success-alert">{message}</p>}
                         <div className='form-group'>
                             <label className="form-label" htmlFor='email'>Email:</label>
                             <input className="form-input" type="email" id="email" ref={emailRef} required />

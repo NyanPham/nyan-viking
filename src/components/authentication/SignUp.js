@@ -49,8 +49,8 @@ export default function SignUp() {
                 </div>
                 <div className="flex justify-center items-center w-1/3">
                     <form className="form p-7 bg-gray-900 flex-col rounded-lg" onSubmit={handleCreateAccount}>
-                        {error && <p className="py-2 px-3 font-semibold text-sm bg-red-300 text-red-600 mb-5">{error}</p>}
-                        {signUpError && <p className="py-2 px-3 font-semibold text-sm bg-red-300 text-red-600 mb-5">{signUpError}</p>}
+                        {error && <p className="error-elert">{error}</p>}
+                        {signUpError && <p className="error-elert">{signUpError}</p>}
                         <div className='form-group'>
                             <label className="form-label" htmlFor='email'>Email:</label>
                             <input className="form-input" type="email" id="email" ref={emailRef} required />
