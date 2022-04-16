@@ -32,7 +32,6 @@ export default function AddProduct({ closeAddProductForm, userId }) {
 
     const { products, loading, error, message } = useSelector(state => state.productStatus)
     const dispatch = useDispatch()
-    console.log(products)
     useEffect(() => {
         validateData()
     }, [dataChangeCount])

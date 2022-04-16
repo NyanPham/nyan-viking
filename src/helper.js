@@ -29,3 +29,7 @@ export function camelCaseToWords(camelCasedWords) {
     const words = result.charAt(0).toUpperCase() + result.slice(1)
     return words
 }
+
+export function formatPrice(price, currency) {
+    return `${new Intl.NumberFormat('en-IN', { style: 'currency', currency: currency }).format(price)} ${currency}`
+}

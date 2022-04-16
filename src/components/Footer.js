@@ -5,7 +5,7 @@ import { faFacebookSquare, faInstagramSquare, faTwitterSquare, faLinkedinIn } fr
 
 export default function Footer() {
     return (
-        <div className="w-full py-7 px-36 bg-gray-300">
+        <footer className="w-full py-7 px-36 bg-gray-300">
             <div className="flex justify-between items-start">
                 <div className="flex gap-20">
                     <div className="flex flex-col gap-5 w-max">
@@ -56,6 +56,6 @@ export default function Footer() {
                     <li className='text-gray-500 text-sm hover:-translate-y-0.5 transform transition cursor-pointer'>Privacy Policy</li>
                 </ul>
             </div>
-        </div>
+        </footer>
     )
 }

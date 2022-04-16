@@ -42,12 +42,7 @@ export function addProduct(product) {
             }
             await addDoc(collection(db, 'products'), productToAdd)
 
-            dispatch({ 
-                type: ACTIONS.ADD_PRODUCT_SUCCESS,
-                payload: {
-                    newProduct: productToAdd
-                }
-            })
+            dispatch({ type: ACTIONS.ADD_PRODUCT_SUCCESS })
         } catch (error) {
             dispatch({
                 type: ACTIONS.ADD_PRODUCT_FAIL,

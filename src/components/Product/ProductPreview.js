@@ -1,26 +1,32 @@
 import React from 'react'
-import bootImage from '../../assets/boot.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBookmark } from '@fortawesome/free-solid-svg-icons'
+import { Link } from 'react-router-dom'
 
-const COLOR_MAP = {
+export const COLOR_MAP = {
     red: 'bg-red-500',
     blue: 'bg-blue-500',
-    brown: 'bg-brown-500'
+    brown: 'bg-amber-700',
+    gray: 'bg-gray-500',
+    black: 'bg-neutral-900',
+    green: 'bg-green-500',
+    sky: 'bg-sky-500',
+    darkblue: 'bg-blue-700',
+    amber: 'bg-amber-500',
 }
 
 export default function ProductPreview(product) {
     const {
         id,
+        code,
         imageURL,
-        name,
+        title,
         description,
         price,
         colors,
         tags,
         categories,
         sizes,
-        is_top_pick,
         salePercent
     } = product
 
@@ -46,21 +52,21 @@ export default function ProductPreview(product) {
                 </div>
             </div>
             <div className="flex flex-col justify-between items-center h-full">
-                <div className="w-32 h-32 mt-5">
-                    <img src={bootImage} alt={name} className="max-w-full max-h-full" />
+                <div className="w-32 h-32 mt-5 relative">
+                    <img src={imageURL} alt={title} className="max-w-full max-h-full object-cover object-center" />
                 </div>
                 <div className="w-full">
                     <h3 className="text-center text-gray-900 text-lg font-semibold">
-                        {name}
+                        {title}
                     </h3>
-                    <p className="text-center text-gray-900 italic text-base">
+                    <p className="text-center text-gray-900 italic text-base w-full truncate">
                         {description}
                     </p>
                     <h3 className="text-lg text-center">${price}</h3>
                 </div>
             </div>
             <div className="absolute inset-0 bg-transparent flex justify-center items-center pointer-events-none group-hover:bg-sky-900/30 group-hover:pointer-events-auto transform transition duration-500">
-                <button className="px-5 py-3 bg-white rounded-sm -rotate-180 scale-0 group-hover:scale-100 group-hover:rotate-0 transform transition duration-500">Read Details</button>
+                <Link to={`/product/${id}`} className="px-5 py-3 bg-white rounded-sm -rotate-180 scale-0 group-hover:scale-100 group-hover:rotate-0 transform transition duration-500">Read Details</Link>
             </div>
         </div>
     )

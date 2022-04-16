@@ -15,7 +15,7 @@ export default function Home({ documentRef }) {
             <Hero />
             <Policies />
             <h2 className="product-showcase-title">Our Picks For Active</h2>
-            <ProductShowcase tags={['top-pick']} numberToShow={4} hasButton={false} />
+            <ProductShowcase tags={['top pick']} numberToShow={4} hasButton={false} />
             <RandomBanner />
             <h2 className="product-showcase-title">Performance In Urban</h2>
             <ProductShowcase tags={['performance']} numberToShow={4} hasButton={true} buttonText={'Shop All Active Outdoors'} />

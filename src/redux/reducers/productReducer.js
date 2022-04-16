@@ -27,11 +27,7 @@ export function productReducer(state = initialState, { type, payload }) {
             return {
                 ...state,
                 loading: false,
-                message: 'The product has been added successfully',
-                products: [
-                    ...state.products,
-                    payload.newProduct
-                ]
+                message: 'The product has been added successfully'
             }
         case ACTIONS.GET_PRODUCT_START:
             return {

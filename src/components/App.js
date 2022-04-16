@@ -13,6 +13,9 @@ import Profile from './authentication/Profile';
 import UpdateProfile from './authentication/UpdateProfile';
 import PRODUCT_ACTIONS from '../redux/actions/productActions';
 import { getProducts } from '../redux/actions/productActions';
+import ProductDetails from './Product/ProductDetails';
+import Footer from './Footer';
+import Header from './Header';
 
 export const PRODUCTS = [
 	{
@@ -148,6 +151,7 @@ function App() {
 				<Route path="/forgot-password" element={<ForgotPassword />} />
 				<Route path="/update-profile" element={<UpdateProfile />} />
 				<Route path="/profile" element={<Profile />} />
+				<Route path="/product/:productId" element={<><Header documentRef={documentRef}/><ProductDetails /><Footer /></>} />
 			</Routes>
 		</div>
 	);

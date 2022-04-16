@@ -1,15 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import NyanLogo from '../assets/nyan-logo.png'
 import BlueNyanLogo from '../assets/blue-nyan-logo.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCartShopping, faUserCircle, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useInView } from 'react-intersection-observer'
 import { logOut } from '../redux/actions/userActions'
 
 export default function Header({ documentRef }) {
+    const { productId } = useParams()
     const [userOpen, setUserOpen] = useState(false)
     const {currentUser, loading, error, userOtherInfo} = useSelector(state => state.userStatus) 
     const dispatch = useDispatch()
@@ -23,7 +24,6 @@ export default function Header({ documentRef }) {
         }
 
         function handleOutClick(e) {
-            console.log(userOpen && e.target.closest('[data-user]') == null)
             if (userOpen && e.target.closest('[data-user]') == null) {
                 setUserOpen(false)
             }
@@ -45,7 +45,7 @@ export default function Header({ documentRef }) {
     return (
         <header>
             {/* header */}
-            <div className="py-7 px-12 flex flex-row justify-between items-center absolute top-0 left-0 w-full z-10" ref={headerRef}>
+            <div className={`${productId ? 'bg-gray-900 py-4' : 'py-7'} px-12 flex flex-row justify-between items-center absolute top-0 left-0 w-full z-10`} ref={headerRef}>
                 <div className="flex flex-row justify-start items-center gap-7">
                     <div className="w-32 h-12">
                         <img src={NyanLogo} alt="Nyan Viking Logo" className="max-h-full max-w-full" />
