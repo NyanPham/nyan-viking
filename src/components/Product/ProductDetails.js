@@ -2,14 +2,18 @@ import { faStar, faUpload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCartShopping } from '@fortawesome/free-solid-svg-icons'
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { useParams, Link, useLocation } from 'react-router-dom'
 import { formatPrice } from '../../helper'
 import { COLOR_MAP } from './ProductPreview'
+import { addToCart } from '../../redux/actions/cartActions'
 
 export default function ProductDetails() {
     const { productId } = useParams()
     const products = useSelector(state => state.productStatus.products)
+    const currentUser = useSelector(state => state.userStatus.currentUser)
+    const { loading, error, message } = useSelector(state => state.cartStatus)
+    const dispatch = useDispatch()
     const [currentProduct, setCurrentProduct] = useState()
     const [selectedColor, setSelectedColor] = useState()
     const [selectedSize, setSelectedSize] = useState()
@@ -21,10 +25,9 @@ export default function ProductDetails() {
     })
 
     useEffect(() => {
-        const product = products.find(product => product.id === productId)
+        const product = products.find(product => product.docId === productId)
         setCurrentProduct(product)
     }, [setCurrentProduct, productId, products])
-
 
     useEffect(() => {
         if (selectedColor) setErrors(prevErrors => {
@@ -83,12 +86,12 @@ export default function ProductDetails() {
 
     function handleAddToCart(e) {
         e.preventDefault()
-     
+        
         if (!validateBeforeAddToCart()) return
         
-        console.log('adding')
+        dispatch(addToCart(currentProduct, selectedColor, selectedSize, selectedAmount, currentUser.uid))
     }
-
+    
     function validateBeforeAddToCart() {
         let isValid = true
         
@@ -118,10 +121,8 @@ export default function ProductDetails() {
         return isValid
     }
 
-    const stars = 3
-
     return (
-        <section className="py-7 px-12 w-full min-h-screen mt-20 flex flex-row gap-8">
+        <section className="py-7 px-12 w-full min-h-screen flex flex-row gap-8">
             <div className="w-3/5 h-96 bg-gray-100/50 rounde-sm flex justify-center items-center">
                 <div className="w-2/3 h-2/3 flex justify-center items-center">
                     <img src={currentProduct?.imageURL} alt={currentProduct?.title} className="max-h-full max-w-full object-contain" />
@@ -139,14 +140,16 @@ export default function ProductDetails() {
                     :   (<h3 className="text-xl font-normal uppercase text-gray-600 tracking-wider mt-5">{currentProduct?.price ? formatPrice(currentProduct.price, 'USD') : 'Free' }</h3>)
                 }
                 <div className="flex flex-row mt-5 gap-5 items-center relative after:content-[''] after:absolute after:-bottom-5 after:left-0 after:w-full after:h-px after:bg-gray-300">
-                    <div className="flex flex-row space-x-1">
-                        {Array(stars).fill().map((_, index) => (
-                            <FontAwesomeIcon icon={faStar} key={`great_star_${index}`} className="text-gray-900" />
-                        ))}
-                        {Array(5 - stars).fill().map((_, index) => (
-                            <FontAwesomeIcon icon={faStar} key={`star_${index}`} className="text-gray-300" />
-                        ))}
-                    </div>
+                    {currentProduct?.rating && 
+                        (<div className="flex flex-row space-x-1">
+                            {Array(currentProduct.rating).fill().map((_, index) => (
+                                <FontAwesomeIcon icon={faStar} key={`great_star_${index}`} className="text-gray-900" />
+                            ))}
+                            {Array(5 - currentProduct.rating).fill().map((_, index) => (
+                                <FontAwesomeIcon icon={faStar} key={`star_${index}`} className="text-gray-300" />
+                            ))}
+                        </div>)
+                    }
                     <p className="grow text-gray-900 font-bold cursor-pointer underline underline-offset-1 decoration-2 hover:text-gray-500 transition">Write a review</p>
                     <FontAwesomeIcon icon={faUpload}  className="text-gray-900 p-3 rounded-full bg-gray-200 cursor-pointer hover:bg-gray-100 hover:text-gray-500 transition" /> 
                 </div>
@@ -164,15 +167,33 @@ export default function ProductDetails() {
                         ))}
                     </div>
                     <div className="flex flex-row mt-5">
-                        <button className="h-7 w-8 border border-gray-300 rounded-sm flex justify-center items-center text-xl" onClick={handleAmountClick} data-action="subtract">-</button>
+                        <button className="h-7 w-8 border border-gray-300 rounded-sm flex justify-center items-center text-xl" type="button" onClick={handleAmountClick} data-action="subtract">-</button>
                         <input type="text" className="w-16 h-7 text-center border border-gray-300 rounded-sm flex justify-center items-center text-xl" value={selectedAmount} onChange={handleAmountChange} onKeyDown={handleAmountChange} />
-                        <button className="h-7 w-8 border border-gray-300 rounded-sm flex justify-center items-center text-xl" onClick={handleAmountClick} data-action="add">+</button>
+                        <button className="h-7 w-8 border border-gray-300 rounded-sm flex justify-center items-center text-xl" type="button" onClick={handleAmountClick} data-action="add">+</button>
                     </div>
                     <div className="flex flex-row mt-5 gap-2">
-                        <button className="submit-btn" type="submit">
-                            Add
-                            <FontAwesomeIcon icon={faCartShopping} className="ml-2" />
-                        </button>
+                        {currentUser?.uid 
+                            ? (
+                                <button className="submit-btn" type="submit" disabled={loading || !currentProduct?.amountInStock}>
+                                    {currentProduct?.amountInStock > 0 
+                                        ? (
+                                            loading ? 'Adding' : 'Add'
+                                        )
+                                        : 'Out Of Stock'
+                                    }
+                                    {currentProduct?.amountInStock > 0 && (<FontAwesomeIcon icon={faCartShopping} className="ml-2" />)}
+                                </button>
+                            )
+                            : (
+                                <Link to="/login" state={{ hasPreviousPage: true }}className="submit-btn" type="button">
+                                    {currentProduct?.amountInStock > 0 
+                                        ? 'Add'
+                                        : 'Out Of Stock'
+                                    }
+                                    {currentProduct?.amountInStock > 0 && (<FontAwesomeIcon icon={faCartShopping} className="ml-2" />)}
+                                </Link>
+                            )
+                        }
                     </div>
                     {Object.keys(errors).map((key, index) => (
                         <p key={`adding_error_${index}`} className={`${index === 0 ? 'mt-2' : ''} text-sm text-red-600`}>{errors[key]}</p>

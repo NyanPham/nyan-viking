@@ -35,6 +35,10 @@
     --swiper-theme-color: white;
 }
 
+#policies .swiper {
+    --swiper-navigation-size: 17px;
+}
+
 .swiper-pagination-bullet {
     width: 12px !important;
     height: 17px !important;
@@ -81,7 +85,7 @@
     }
 
     .submit-btn {
-        @apply py-3 px-2 text-center bg-emerald-500 text-gray-900 rounded-md w-full font-semibold active:bg-emerald-600 hover:bg-emerald-400 hover:-translate-y-1 transform transition
+        @apply py-3 px-2 text-center bg-emerald-500 text-gray-900 rounded-md w-full font-semibold active:bg-emerald-600 hover:bg-emerald-400 hover:-translate-y-1 transform transition disabled:bg-gray-200 disabled:text-gray-700 disabled:pointer-events-none
     }
 
     .auth-btn {

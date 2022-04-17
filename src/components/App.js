@@ -16,6 +16,8 @@ import { getProducts } from '../redux/actions/productActions';
 import ProductDetails from './Product/ProductDetails';
 import Footer from './Footer';
 import Header from './Header';
+import { getCart } from '../redux/actions/cartActions';
+import Cart from './Cart/Cart';
 
 export const PRODUCTS = [
 	{
@@ -137,6 +139,7 @@ function App() {
 		if (user) {
 			dispatch(setUser(user))
 			dispatch(getUserProfileInfo(user.uid))
+			dispatch(getCart(user.uid))
 		} else {
 			dispatch(removeUser())
 		}
@@ -152,6 +155,7 @@ function App() {
 				<Route path="/update-profile" element={<UpdateProfile />} />
 				<Route path="/profile" element={<Profile />} />
 				<Route path="/product/:productId" element={<><Header documentRef={documentRef}/><ProductDetails /><Footer /></>} />
+				<Route path="/cart" element={<><Header documentRef={documentRef} /><Cart /><Footer /> </>} />
 			</Routes>
 		</div>
 	);

@@ -40,7 +40,6 @@ export default function ProductShowcase(props) {
             })
         }
         
-        
         if (numberToShow != null) {
             targetedProducts = shuffleItems(targetedProducts)
             targetedProducts = targetedProducts.slice(0, numberToShow)

@@ -5,12 +5,13 @@ import BlueNyanLogo from '../assets/blue-nyan-logo.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCartShopping, faUserCircle, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useInView } from 'react-intersection-observer'
 import { logOut } from '../redux/actions/userActions'
 
 export default function Header({ documentRef }) {
-    const { productId } = useParams()
+    const location = useLocation()
+    const notHome = location.pathname.split('/').some(path => ['product', 'cart'].includes(path))
     const [userOpen, setUserOpen] = useState(false)
     const {currentUser, loading, error, userOtherInfo} = useSelector(state => state.userStatus) 
     const dispatch = useDispatch()
@@ -45,11 +46,11 @@ export default function Header({ documentRef }) {
     return (
         <header>
             {/* header */}
-            <div className={`${productId ? 'bg-gray-900 py-4' : 'py-7'} px-12 flex flex-row justify-between items-center absolute top-0 left-0 w-full z-10`} ref={headerRef}>
+            <div className={`${notHome ? 'bg-gray-900 py-4 static' : 'py-7 absolute top-0 left-0'} px-12 flex flex-row justify-between items-center w-full z-10`} ref={headerRef}>
                 <div className="flex flex-row justify-start items-center gap-7">
-                    <div className="w-32 h-12">
+                    <Link to="/" className="w-32 h-12 block">
                         <img src={NyanLogo} alt="Nyan Viking Logo" className="max-h-full max-w-full" />
-                    </div>
+                    </Link>
                     <nav>
                         <ul  className="flex justify-between items-center gap-7">
                             <li className="cursor-pointer"><a className="text-lg text-white group hover:text-sky-300">For Men <span className="arrow-down"/></a></li>
@@ -73,10 +74,10 @@ export default function Header({ documentRef }) {
                                     <button className="w-full py-3 px-4 hover:bg-gray-300 transition" onClick={handleLogout}>Logout</button>
                                 </div>
                             </div>
-                            <div className="cursor-pointer group">
+                            <Link to={`/cart`} className="cursor-pointer group block">
                                 <FontAwesomeIcon icon={faCartShopping} className="text-xl text-white group-hover:-translate-y-0.5 group-hover:text-sky-300 transform transition" />
                                 <span className="text-white uppercase ml-3 tracking-wide group-hover:text-sky-300">Items: 0</span>
-                            </div>
+                            </Link>
                         </div>
                     )
                     : (
@@ -88,9 +89,9 @@ export default function Header({ documentRef }) {
             {/* fixed header */}
             <div className={`${inView ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-1'} py-3 px-12 flex flex-row justify-between items-center bg-white fixed top-0 left-0 w-full z-20 transform transition shadow-md`}>
                 <div className="flex flex-row justify-start items-center gap-7">
-                    <div className="w-32 h-12">
+                    <Link to="/" className="w-32 h-12 block">
                         <img src={BlueNyanLogo} alt="Nyan Viking Logo" className="max-h-full max-w-full" />
-                    </div>
+                    </Link>
                     <nav>
                         <ul  className="flex justify-between items-center gap-7">
                             <li className="cursor-pointer"><a className="text-lg text-gray-900 group hover:text-sky-300">For Men <span className="arrow-down"/></a></li>
@@ -114,10 +115,10 @@ export default function Header({ documentRef }) {
                                     <button className="w-full py-3 px-4 hover:bg-gray-300 transition" onClick={handleLogout}>Logout</button>
                                 </div>
                             </div>
-                            <div className="cursor-pointer group">
+                            <Link to={`/cart`} className="cursor-pointer group block">
                                 <FontAwesomeIcon icon={faCartShopping} className="text-xl text-gray-900 group-hover:-translate-y-0.5 group-hover:text-sky-300 transform transition" />
                                 <span className="text-gray-900 uppercase ml-3 tracking-wide group-hover:text-sky-300">Items: 0</span>
-                            </div>
+                            </Link>
                         </div>
                     )
                     : (

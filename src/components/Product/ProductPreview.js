@@ -17,7 +17,7 @@ export const COLOR_MAP = {
 
 export default function ProductPreview(product) {
     const {
-        id,
+        docId, 
         code,
         imageURL,
         title,
@@ -66,7 +66,7 @@ export default function ProductPreview(product) {
                 </div>
             </div>
             <div className="absolute inset-0 bg-transparent flex justify-center items-center pointer-events-none group-hover:bg-sky-900/30 group-hover:pointer-events-auto transform transition duration-500">
-                <Link to={`/product/${id}`} className="px-5 py-3 bg-white rounded-sm -rotate-180 scale-0 group-hover:scale-100 group-hover:rotate-0 transform transition duration-500">Read Details</Link>
+                <Link to={`/product/${docId}`} className="px-5 py-3 bg-white rounded-sm -rotate-180 scale-0 group-hover:scale-100 group-hover:rotate-0 transform transition duration-500">Read Details</Link>
             </div>
         </div>
     )

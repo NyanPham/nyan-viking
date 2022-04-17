@@ -19,7 +19,7 @@ export function capitalize(string) {
 
 export function formatDoc(doc) {
     return {
-        id: doc.id,
+        docId: doc.id,
         ...doc.data()
     }
 }

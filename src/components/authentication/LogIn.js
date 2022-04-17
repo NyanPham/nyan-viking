@@ -3,9 +3,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import { logIn, resetErrorsAndMessages } from '../../redux/actions/userActions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 export default function LogIn() {
+    const location = useLocation()
+    const hasPreviousPage = location.state?.hasPreviousPage
 
     const emailRef= useRef()
     const passwordRef = useRef()
@@ -16,6 +18,7 @@ export default function LogIn() {
     useEffect(() => {
         if (currentUser?.email) {
             dispatch(resetErrorsAndMessages())
+            if (hasPreviousPage) return navigate(-1)
             navigate('/')
         }
     }, [currentUser])
