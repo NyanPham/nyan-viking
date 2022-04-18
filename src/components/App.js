@@ -18,6 +18,7 @@ import Footer from './Footer';
 import Header from './Header';
 import { getCart } from '../redux/actions/cartActions';
 import Cart from './Cart/Cart';
+import Checkout from './Cart/Checkout';
 
 export const PRODUCTS = [
 	{
@@ -156,6 +157,7 @@ function App() {
 				<Route path="/profile" element={<Profile />} />
 				<Route path="/product/:productId" element={<><Header documentRef={documentRef}/><ProductDetails /><Footer /></>} />
 				<Route path="/cart" element={<><Header documentRef={documentRef} /><Cart /><Footer /> </>} />
+				<Route path="/checkout" element={<Checkout />} />
 			</Routes>
 		</div>
 	);

@@ -68,6 +68,25 @@ export function cartReducer(state = initialState, { type, payload }) {
                 loading: false,
                 message: 'The amount of the item has been updated'
             }
+        case ACTIONS.REMOVE_ITEM_START:
+            return {
+                ...state,
+                loading: true,
+                message: '',
+                error: ''
+            }
+        case ACTIONS.REMOVE_ITEM_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: 'Failed to remove item from your cart'
+            }
+        case ACTIONS.REMOVE_ITEM_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                message: 'The item has been removed'
+            }
         default:
             return state
     }

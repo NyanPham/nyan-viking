@@ -13,7 +13,8 @@ export default function Header({ documentRef }) {
     const location = useLocation()
     const notHome = location.pathname.split('/').some(path => ['product', 'cart'].includes(path))
     const [userOpen, setUserOpen] = useState(false)
-    const {currentUser, loading, error, userOtherInfo} = useSelector(state => state.userStatus) 
+    const {currentUser, loading, error, userOtherInfo} = useSelector(state => state.userStatus)
+    const cartItems = useSelector(state => state.cartStatus.cartItems) 
     const dispatch = useDispatch()
     const { ref: headerRef, inView } = useInView({
         threshold: 0.5
@@ -76,7 +77,7 @@ export default function Header({ documentRef }) {
                             </div>
                             <Link to={`/cart`} className="cursor-pointer group block">
                                 <FontAwesomeIcon icon={faCartShopping} className="text-xl text-white group-hover:-translate-y-0.5 group-hover:text-sky-300 transform transition" />
-                                <span className="text-white uppercase ml-3 tracking-wide group-hover:text-sky-300">Items: 0</span>
+                                <span className="text-white uppercase ml-3 tracking-wide group-hover:text-sky-300">Items: {cartItems.length}</span>
                             </Link>
                         </div>
                     )
@@ -117,7 +118,7 @@ export default function Header({ documentRef }) {
                             </div>
                             <Link to={`/cart`} className="cursor-pointer group block">
                                 <FontAwesomeIcon icon={faCartShopping} className="text-xl text-gray-900 group-hover:-translate-y-0.5 group-hover:text-sky-300 transform transition" />
-                                <span className="text-gray-900 uppercase ml-3 tracking-wide group-hover:text-sky-300">Items: 0</span>
+                                <span className="text-gray-900 uppercase ml-3 tracking-wide group-hover:text-sky-300">Items: {cartItems.length}</span>
                             </Link>
                         </div>
                     )

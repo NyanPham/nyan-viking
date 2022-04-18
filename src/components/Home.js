@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Footer from './Footer';
 import Header from "./Header";
 import Hero from "./Hero";
@@ -9,6 +9,14 @@ import RandomBanner from './RandomBanner';
 import Testimonials from './Testimonials';
 
 export default function Home({ documentRef }) {
+
+    useEffect(() => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
+    }, [])
+    
     return (
         <div className="relative">
             <Header documentRef={documentRef}/>

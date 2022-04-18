@@ -1,5 +1,5 @@
 import { db } from "../../firebase"
-import { addDoc, doc, updateDoc, collection, serverTimestamp, query, where, orderBy, onSnapshot } from 'firebase/firestore'
+import { addDoc, doc, updateDoc, deleteDoc, collection, serverTimestamp, query, where, orderBy, onSnapshot } from 'firebase/firestore'
 import { formatDoc } from '../../helper'
 
 const ACTIONS = {
@@ -13,7 +13,11 @@ const ACTIONS = {
 
     UPDATE_CART_ITEM_AMOUNT_START: 'update-cart-item-amount-start',
     UPDATE_CART_ITEM_AMOUNT_FAIL: 'update-cart-item-amount-fail',
-    UPDATE_CART_ITEM_AMOUNT_SUCCESS: 'update-cart-item-amount-success'
+    UPDATE_CART_ITEM_AMOUNT_SUCCESS: 'update-cart-item-amount-success',
+
+    REMOVE_ITEM_START: 'remove-item-start',
+    REMOVE_ITEM_FAIL: 'remove-item-fail',
+    REMOVE_ITEM_SUCCESS: 'remove-item-success'
 }
 
 export function getCart(userId) {
@@ -75,7 +79,16 @@ export function updateCartItemAmount(cartItemId, newAmount) {
 }
 
 export function removeItemFromCart(cartItemId) {
-    
+    return async (dispatch) => {
+        try {
+            dispatch({ type: ACTIONS.REMOVE_ITEM_START })
+            const cartItemToDelete = doc(db, 'carts', cartItemId)
+            await deleteDoc(cartItemToDelete)
+            dispatch({ type: ACTIONS.REMOVE_ITEM_SUCCESS })
+        } catch {
+            dispatch({ type: ACTIONS.REMOVE_ITEM_FAIL})
+        }
+    }    
 }
 
 export default ACTIONS

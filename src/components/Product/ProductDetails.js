@@ -27,6 +27,11 @@ export default function ProductDetails() {
     useEffect(() => {
         const product = products.find(product => product.docId === productId)
         setCurrentProduct(product)
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+        })
     }, [setCurrentProduct, productId, products])
 
     useEffect(() => {

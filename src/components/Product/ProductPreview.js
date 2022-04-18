@@ -2,6 +2,7 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBookmark } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
+import { useInView } from 'react-intersection-observer'
 
 export const COLOR_MAP = {
     red: 'bg-red-500',
@@ -29,9 +30,11 @@ export default function ProductPreview(product) {
         sizes,
         salePercent
     } = product
+    
+    const { ref, inView } = useInView()
 
     return (
-        <div className="px-4 py-3 card w-56 h-72 bg-white cursor-pointer relative overflow-clip group">
+        <div className={`${inView ? 'animate-fadeIn' : ''} transform transition duration-1000 px-4 py-3 card w-56 h-72 bg-white cursor-pointer relative overflow-clip group`} ref={ref}>
             <div className="flex justify-between items-start py-2 px-3 absolute top-0 left-0 w-full">
                 <div>
                     {salePercent > 0   
