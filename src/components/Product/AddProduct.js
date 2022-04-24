@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFileArrowUp, faSpinner } from '@fortawesome/free-solid-svg-icons'
@@ -6,7 +6,7 @@ import { addProduct } from '../../redux/actions/productActions'
 
 export const IMAGE_EXTENSIONS = ['image/jpeg', 'image/jpg', 'image/png']
 const numberFields = ['price', 'salePercent', 'amountInStock']
-const arrayFields = ['colors', 'sizes', 'collections', 'tags']
+// const arrayFields = ['colors', 'sizes', 'collections', 'tags']
 const initialProductData = {
     code: '',
     title: '',
@@ -21,7 +21,7 @@ const initialProductData = {
     amountInStock: 0,
 }
 
-export default function AddProduct({ closeAddProductForm, userId }) {
+export default function AddProduct({ closeAddProductForm, userId, addProductFormOpen }) {
     const imageInputRef = useRef()
     const [loadingImage, setLoadingImage] = useState(false)
     const [image, setImage] = useState()
@@ -30,11 +30,25 @@ export default function AddProduct({ closeAddProductForm, userId }) {
     const [dataChangeCount, setDataChangeCount] = useState(0)
     const [productData, setProductData] = useState(initialProductData)
 
-    const { products, loading, error, message } = useSelector(state => state.productStatus)
+    const { loading, error, message } = useSelector(state => state.productStatus)
     const dispatch = useDispatch()
+    const validateData = useCallback(() => {
+        let isValid = true
+        const fields = Object.keys(productData)
+
+        if (image == null) return setDataValid(false)
+
+        isValid = fields.every(field => {
+            if (numberFields.includes(field)) return true
+            return productData[field] !== ''
+        })
+
+        setDataValid(isValid)
+    }, [image, productData])
+
     useEffect(() => {
         validateData()
-    }, [dataChangeCount])
+    }, [dataChangeCount, validateData])
 
     useEffect(() => {
         if (message !== '') {
@@ -52,7 +66,7 @@ export default function AddProduct({ closeAddProductForm, userId }) {
         const imageFile = e.target.files[0]
         if (!IMAGE_EXTENSIONS.includes(imageFile.type)) return alert('Please select a valid image!') 
         setLoadingImage(true)
-        const fileReader = new FileReader
+        const fileReader = new FileReader()
         
         fileReader.onload = () => {
             const imageURL = fileReader.result
@@ -86,19 +100,6 @@ export default function AddProduct({ closeAddProductForm, userId }) {
         dispatch(addProduct(product))
     }
 
-    function validateData() {
-        let isValid = true
-        const fields = Object.keys(productData)
-
-        if (image == null) return setDataValid(false)
-
-        isValid = fields.every(field => {
-            if (numberFields.includes(field)) return true
-            return productData[field] !== ''
-        })
-
-        setDataValid(isValid)
-    }
     return (
         <form className="h-4/5 w-1/3 py-7 px-10 bg-white overflow-y-auto rounded-sm relative" id="add-product-form" onSubmit={handleAddProduct}>
             <button className="absolute top-3 right-3 text-xl text-gray-700 hover:text-gray-500 transition" type="button" onClick={closeAddProductForm}>&times;</button>
@@ -145,7 +146,7 @@ export default function AddProduct({ closeAddProductForm, userId }) {
                 <label className='form-label text-gray-700' htmlFor="product_image">Image:
                     <span className="font-normal ml-2">{image?.name || ''}</span>
                 </label>
-                <div className={`${loadingImage ? 'pointer-events-none' : 'pointer-events-auto'} w-full h-36 border border-gray-600 flex justify-center items-center overflow-clip cursor-pointer group hover:border-gray-400 transition`} onClick={handleAddImageClick}>
+                <div className={`${loadingImage || !addProductFormOpen ? 'pointer-events-none' : 'pointer-events-auto'} w-full h-36 border border-gray-600 flex justify-center items-center overflow-clip cursor-pointer group hover:border-gray-400 transition`} onClick={handleAddImageClick}>
                     {imageURL
                         ? (<img src={imageURL} alt={image.name} className="max-w-full max-h-full object-cover object-center"/>)
                         : loadingImage && !image

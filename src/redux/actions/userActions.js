@@ -1,4 +1,4 @@
-import { auth, db } from "../../firebase"
+import { auth, db, storage } from "../../firebase"
 import { 
     createUserWithEmailAndPassword, 
     sendPasswordResetEmail,
@@ -11,6 +11,7 @@ import {
 
 import { addDoc, doc, collection, getDocs, where, query, updateDoc } from 'firebase/firestore'
 import { formatDoc } from "../../helper"
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 
 const ACTIONS = {
     SET_USER: 'set-user',
@@ -36,6 +37,10 @@ const ACTIONS = {
     USER_UPDATE_START: 'user-update-start',
     USER_UPDATE_FAIL: 'user-update-fail',
     USER_UPDATE_SUCCESS: 'user-update-success',
+
+    USER_UPLOAD_PHOTO_START: 'user-upload-photo-start',
+    USER_UPLOAD_PHOTO_FAIL: 'user-upload-photo-fail',
+    USER_UPLOAD_PHOTO_SUCCESS: 'user-upload-photo-success',
 
     USER_CONFIRM_ACCOUNT_START: "user-confirm-account-start",
     USER_CONFIRM_ACCOUNT_FAIL: "user-confirm-account-fail",
@@ -150,7 +155,7 @@ export function userUpdateProfileInfo(email, password, firstName, lastName, disp
             if (firstName.changed) {
                 items.push({ name: 'firstName', value: firstName.value , promise: userUpdateOtherInfo(userId, 'firstName', firstName.value) })
             }
-
+            
             if (lastName.changed) {
                 items.push({ name: 'lastName', value: lastName.value , promise: userUpdateOtherInfo(userId, 'lastName', lastName.value) })
             }
@@ -160,7 +165,7 @@ export function userUpdateProfileInfo(email, password, firstName, lastName, disp
             }
             
             if (phone.changed) {
-                items. push({ name: 'phoneNumber', value: phone.value, promise: userUpdateOtherInfo(userId, 'phoneNumber', phone.value) })
+                items.push({ name: 'phoneNumber', value: phone.value, promise: userUpdateOtherInfo(userId, 'phoneNumber', phone.value) })
             }
             
             const updatingItems = items.map(item => item.promise)
@@ -186,6 +191,22 @@ export function userUpdateProfileInfo(email, password, firstName, lastName, disp
         } catch(error) {
             console.log(error)
             dispatch({ type: ACTIONS.USER_UPDATE_FAIL })
+        }
+    }
+}
+
+export function updateProfilePhoto(userId, imageFile) {
+    return async (dispatch) => {
+        try {  
+            dispatch({ type: ACTIONS.USER_UPLOAD_PHOTO_START })
+            const path = `profile_photos/${userId}/photo`
+            const storageRef = ref(storage, path)
+            await uploadBytes(storageRef, imageFile)
+            const photoImageURL = await getDownloadURL(storageRef)
+            await updateProfile(auth.currentUser, { photoURL: photoImageURL })
+            dispatch({ type: ACTIONS.USER_UPLOAD_PHOTO_SUCCESS })
+        } catch {
+            dispatch({ type: ACTIONS.USER_UPLOAD_PHOTO_FAIL })
         }
     }
 }

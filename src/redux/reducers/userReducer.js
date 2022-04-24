@@ -125,6 +125,21 @@ export function userReducer(state = initialState, { type, payload }) {
                     [payload.field]: payload.value
                 }
             }
+        case ACTIONS.USER_UPLOAD_PHOTO_START:
+            console.log('start upload file')
+            return {
+                ...state
+            }
+        case ACTIONS.USER_UPLOAD_PHOTO_FAIL:
+            console.log('fail to upload file')
+            return {
+                ...state
+            }
+        case ACTIONS.USER_UPLOAD_PHOTO_SUCCESS:
+            console.log('succeed to upload file')
+            return {
+                ...state
+            }
         default: 
             return state
     }

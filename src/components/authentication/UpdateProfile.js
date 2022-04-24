@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
@@ -139,12 +139,51 @@ export default function UpdateProfile() {
         }
     ]
 
+    const handleUpdateProfile = useCallback(() => {
+            let email = { changed: false, value: '' }
+            let password = { changed: false, value: '' }
+            let displayName = { changed: false, value: '' }
+            let firstName = { changed: false, value: '' }
+            let lastName = { changed: false, value: '' } 
+            let address = { changed: false, value: '' }
+            let phoneNumber = { changed: false, value: '' }
+    
+            if (emailRef.current.value !== currentUser.email) {
+                email = { changed: true, value: emailRef.current.value }
+            }
+    
+            if (passwordRef.current.value !== '') {
+                password = { changed: true, value: passwordRef.current.value }
+            }
+    
+            if (displayNameRef.current.value !== '' && displayNameRef.current.value !== currentUser.displayName) {
+                displayName = { changed: true, value: displayNameRef.current.value }
+            }
+    
+            if (firstNameRef.current.value !== '' && firstNameRef.current.value !== userOtherInfo.firstName) {
+                firstName= { changed: true, value: firstNameRef.current.value }
+            }
+    
+            if (lastNameRef.current.value !== '' && lastNameRef.current.value !== userOtherInfo.lastName) {
+                lastName = { changed: true, value: lastNameRef.current.value }
+            }
+    
+            if (addressRef.current.value !== '' && addressRef.current.value !== userOtherInfo.address) {
+                address = { changed: true, value: addressRef.current.value }
+            }
+            
+            if (phoneRef.current.value !== '' && phoneRef.current.value !== userOtherInfo.phoneNumber) {
+                phoneNumber = { changed: true, value: phoneRef.current.value }
+            }
+    
+            dispatch(userUpdateProfileInfo(email, password, firstName, lastName, displayName, address, phoneNumber, currentUser.uid))
+    }, [dispatch, userOtherInfo.address, userOtherInfo.firstName, userOtherInfo.lastName, userOtherInfo.phoneNumber, currentUser?.displayName, currentUser?.email, currentUser?.uid])
+
     useEffect(() => {
         if (accountConfirmed && error === '') {
             handleUpdateProfile()
             setConfirmOpen(false)
         }
-
     }, [error, accountConfirmed, handleUpdateProfile])
 
     function handleSubmitClick(e) {
@@ -160,46 +199,7 @@ export default function UpdateProfile() {
     function handleConfirmSubmit(e) {
         e.preventDefault() 
         dispatch(confirmAccount(accountConfirmEmailRef.current.value, accountConfirmPasswordRef.current.value))
-    }
-
-    function handleUpdateProfile() {
-        let email = { changed: false, value: '' }
-        let password = { changed: false, value: '' }
-        let displayName = { changed: false, value: '' }
-        let firstName = { changed: false, value: '' }
-        let lastName = { changed: false, value: '' } 
-        let address = { changed: false, value: '' }
-        let phoneNumber = { changed: false, value: '' }
-
-        if (emailRef.current.value !== currentUser.email) {
-            email = { changed: true, value: emailRef.current.value }
-        }
-
-        if (passwordRef.current.value !== '') {
-            password = { changed: true, value: passwordRef.current.value }
-        }
-
-        if (displayNameRef.current.value !== '' && displayNameRef.current.value !== currentUser.displayName) {
-            displayName = { changed: true, value: displayNameRef.current.value }
-        }
-
-        if (firstNameRef.current.value !== '' && firstNameRef.current.value !== userOtherInfo.firstName) {
-            firstName= { changed: true, value: firstNameRef.current.value }
-        }
-
-        if (lastNameRef.current.value !== '' && lastNameRef.current.value !== userOtherInfo.lastName) {
-            lastName = { changed: true, value: lastNameRef.current.value }
-        }
-
-        if (addressRef.current.value !== '' && addressRef.current.value !== userOtherInfo.address) {
-            address = { changed: true, value: addressRef.current.value }
-        }
-        
-        if (phoneRef.current.value !== '' && phoneRef.current.value !== userOtherInfo.phoneNumber) {
-            phoneNumber = { changed: true, value: phoneRef.current.value }
-        }
-
-        dispatch(userUpdateProfileInfo(email, password, firstName, lastName, displayName, address, phoneNumber, currentUser.uid))
+        setConfirmOpen(false)
     }
 
     function handleStepButtonClick(buttonType, buttonAction) {
