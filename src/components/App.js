@@ -1,3 +1,4 @@
+import ReactDOM from 'react-dom'
 import { useEffect } from 'react';
 import Home from './Home'
 import { Routes, Route } from 'react-router-dom'
@@ -19,6 +20,7 @@ import Header from './Header';
 import { getCart } from '../redux/actions/cartActions';
 import Cart from './Cart/Cart';
 import Checkout from './Cart/Checkout';
+import ToastContainer from './toast/ToastContainer';
 
 export const PRODUCTS = [
 	{
@@ -159,6 +161,10 @@ function App() {
 				<Route path="/cart" element={<><Header documentRef={documentRef} /><Cart /><Footer /> </>} />
 				<Route path="/checkout" element={<Checkout />} />
 			</Routes>
+			{ReactDOM.createPortal(
+				<ToastContainer />,
+				document.getElementById('root')
+			)}
 		</div>
 	);
 }

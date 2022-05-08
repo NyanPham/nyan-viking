@@ -7,6 +7,7 @@ import { useParams, Link, useLocation } from 'react-router-dom'
 import { formatPrice } from '../../helper'
 import { COLOR_MAP } from './ProductPreview'
 import { addToCart } from '../../redux/actions/cartActions'
+import { addToast } from '../../redux/actions/toastAction'
 
 export default function ProductDetails() {
     const { productId } = useParams()
@@ -57,6 +58,19 @@ export default function ProductDetails() {
         })
     }, [selectedColor, selectedSize, selectedAmount, setErrors])
 
+    useEffect(() => {
+        if (message === "The item has been added to your cart") {
+            const toast = {
+                name: currentProduct.title,
+                imageURL: currentProduct.imageURL,
+                selectedAmount,
+                selectedSize,
+                selectedColor
+            }
+            dispatch(addToast(toast))
+        }
+    }, [message, currentProduct, dispatch])
+
     function handleAmountChange(e) {
         if (e.type === 'keydown') {
             let newValue
@@ -93,7 +107,6 @@ export default function ProductDetails() {
         e.preventDefault()
         
         if (!validateBeforeAddToCart()) return
-        
         dispatch(addToCart(currentProduct, selectedColor, selectedSize, selectedAmount, currentUser.uid))
     }
     

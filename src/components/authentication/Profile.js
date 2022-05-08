@@ -94,7 +94,7 @@ export default function Profile() {
             </div>
             {currentUser?.uid === process.env.REACT_APP_NYAN_VIKING_ADMIN_ID && (
                 <div className={`${addProductFormOpen && currentUser.uid === process.env.REACT_APP_NYAN_VIKING_ADMIN_ID ? 'opacity-100 -translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-10 pointer-events-none'} fixed inset-0 bg-gray-900/90 flex justify-center items-center z-10 transform transition duration-300`} onClick={handleAddProductLayoutClick}>
-                    <AddProduct closeAddProductForm={closeAddProductForm} userId={currentUser.uid} addProductFormOpen={addProductFormOpen} />
+                    <AddProduct closeAddProductForm={closeAddProductForm} addProductFormOpen={addProductFormOpen} />
                 </div>
             )}
         </div>

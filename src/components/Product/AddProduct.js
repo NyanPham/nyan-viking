@@ -21,7 +21,7 @@ const initialProductData = {
     amountInStock: 0,
 }
 
-export default function AddProduct({ closeAddProductForm, userId, addProductFormOpen }) {
+export default function AddProduct({ closeAddProductForm, addProductFormOpen }) {
     const imageInputRef = useRef()
     const [loadingImage, setLoadingImage] = useState(false)
     const [image, setImage] = useState()
