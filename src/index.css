@@ -71,6 +71,16 @@ body {
     background-blend-mode: darken;
 }
 
+.toast::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background-color: blue;
+    width: calc(100% * var(--progress));
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

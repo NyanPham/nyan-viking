@@ -1,25 +1,66 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { capitalize } from '../../helper'
 import useTimeout from '../../hooks/useTimeout'
 
 export default function Toast(props) {
-    const [mounted, setMounted] = useState(false)
-    const [inPage, setInPage] = useState(false)
-    useTimeout(() => setInPage(true), 1000)
     const {
         name,
         imageURL,
         selectedAmount, 
         selectedSize,
         selectedColor,
+        duration = 5000
     } = props
 
-    useEffect(() => {
-        setMounted(true)
-    }, [])
+    const [inPage, setInPage] = useState(false)
+    const [shouldHide, setShouldHide] = useState(false)
+    useTimeout(() => setInPage(true), 10)
+    const { clear } = useTimeout(() => setInPage(false), duration)
+    const toastRef = useRef()
+    const animationFrameRef = useRef()
+    const lastTimeRef = useRef()
+    const visibleTime = useRef(0)
 
+    const handleTransitionEnd = () => {
+        if (inPage) return
+        setShouldHide(true)
+    }
+
+    const handleToastClick = () => {
+        clear()
+        setInPage(false)
+    }
+
+    useEffect(() => {
+        if (inPage && !shouldHide) {
+            const progressBar = (time) => {
+                if (!lastTimeRef.current) {
+                    lastTimeRef.current = time
+                    animationFrameRef.current = requestAnimationFrame(progressBar)
+                }
+
+                visibleTime.current += time - lastTimeRef.current
+                toastRef.current.style.setProperty('--progress', 1 - visibleTime.current / duration)
+                lastTimeRef.current = time
+                animationFrameRef.current = requestAnimationFrame(progressBar)
+            }
+
+            animationFrameRef.current = requestAnimationFrame(progressBar)
+        } else {
+            cancelAnimationFrame(animationFrameRef.current)
+        } 
+
+        return () => cancelAnimationFrame(animationFrameRef.current)
+
+    }, [inPage, shouldHide])
+    
     return (
-        <div className={`${mounted && inPage ? 'translate-x-0' : 'translate-x-full'} h-max w-80 bg-gray-100 rounded-sm m-4 shadow-lg transition transform duration-1000`}>
+        <div 
+            className={`${inPage ? 'translate-x-0' : 'translate-x-96'} ${shouldHide && 'hidden'} h-max w-80 bg-gray-100 rounded-sm m-4 shadow-lg transition transform duration-700 relative overflow-hidden toast`} 
+            onTransitionEnd={handleTransitionEnd}
+            onClick={handleToastClick}    
+            ref={toastRef}
+        >
             <div className="p-2 border-b border-gray-400 text-center">
                 <h3 className="text-base">This item was added to your cart</h3>
             </div>

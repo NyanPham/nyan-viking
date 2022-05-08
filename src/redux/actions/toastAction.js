@@ -4,8 +4,7 @@ const ACTIONS = {
 }
 
 export function addToast(toast) {
-    const toastId = Date.now().toString()
-    console.log(toastId)
+    const toastId = Date.now().toString() + Math.random().toString()
     return {
         type: ACTIONS.ADD_TOAST,
         payload: {
@@ -16,8 +15,11 @@ export function addToast(toast) {
 }
 
 export function deleteToast(toastId) {
-    return {
-
+    return {   
+        type: ACTIONS.DELETE_TOAST,
+        payload: {
+            toastId
+        }
     }
 }
 
