@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBookmark } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import { useInView } from 'react-intersection-observer'
+import useOnScreen from '../../hooks/useOnScreen'
+import useTimeout from '../../hooks/useTimeout'
 
 export const COLOR_MAP = {
     red: 'bg-red-500',
@@ -31,10 +33,16 @@ export default function ProductPreview(product) {
         salePercent
     } = product
     
-    const { ref, inView } = useInView()
+    const elementRef = useRef()
+    const inView = useOnScreen(elementRef)
+    const [animated, setAnimated] = useState(false)
 
+    const endAnimation = () => {
+        setAnimated(true)
+    }
+    
     return (
-        <div className={`${inView ? 'animate-fadeIn' : ''} transform transition duration-1000 px-4 py-3 card w-56 h-72 bg-white cursor-pointer relative overflow-clip group`} ref={ref}>
+        <div className={`${inView && !animated ? 'animate-fadeIn' : ''} transform transition duration-1000 px-4 py-3 card w-56 h-72 bg-white cursor-pointer relative overflow-clip group`} ref={elementRef} onAnimationEnd={endAnimation}>
             <div className="flex justify-between items-start py-2 px-3 absolute top-0 left-0 w-full">
                 <div>
                     {salePercent > 0   

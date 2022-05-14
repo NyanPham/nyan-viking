@@ -11,7 +11,7 @@ export default function Toast(props) {
         selectedColor,
         duration = 5000
     } = props
-
+    
     const [inPage, setInPage] = useState(false)
     const [shouldHide, setShouldHide] = useState(false)
     useTimeout(() => setInPage(true), 10)
