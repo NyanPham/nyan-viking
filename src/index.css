@@ -81,6 +81,10 @@ body {
     width: calc(100% * var(--progress));
 }
 
+.product-showcase {
+    min-height: 344px;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

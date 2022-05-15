@@ -185,9 +185,9 @@ export default function ProductDetails() {
                         ))}
                     </div>
                     <div className="flex flex-row mt-5">
-                        <button className="h-7 w-8 border border-gray-300 rounded-sm flex justify-center items-center text-xl" type="button" onClick={handleAmountClick} data-action="subtract">-</button>
-                        <input type="text" className="w-16 h-7 text-center border border-gray-300 rounded-sm flex justify-center items-center text-xl" value={selectedAmount} onChange={handleAmountChange} onKeyDown={handleAmountChange} />
-                        <button className="h-7 w-8 border border-gray-300 rounded-sm flex justify-center items-center text-xl" type="button" onClick={handleAmountClick} data-action="add">+</button>
+                        <button className="h-9 w-9 border border-gray-300 rounded-sm flex justify-center items-center text-xl" type="button" onClick={handleAmountClick} data-action="subtract">-</button>
+                        <input type="text" className="w-16 h-9 text-center border border-gray-300 rounded-sm flex justify-center items-center text-lg" value={selectedAmount} onChange={handleAmountChange} onKeyDown={handleAmountChange} />
+                        <button className="h-9 w-9 border border-gray-300 rounded-sm flex justify-center items-center text-xl" type="button" onClick={handleAmountClick} data-action="add">+</button>
                     </div>
                     <div className="flex flex-row mt-5 gap-2">
                         {currentUser?.uid 

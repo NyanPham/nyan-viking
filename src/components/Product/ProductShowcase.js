@@ -16,7 +16,7 @@ export default function ProductShowcase(props) {
     
     const [productsToShow, setProductsToShow] = useState([])
     const products = useSelector(state => state.productStatus.products)
-
+    
     useEffect(() => {
         let targetedProducts = products
         
@@ -50,7 +50,7 @@ export default function ProductShowcase(props) {
 
     return (
         <>
-            <div className="py-7 px-12 w-full flex flex-wrap justify-center items-center gap-12">
+            <div className="py-7 px-12 w-full flex flex-wrap justify-center items-center gap-12 product-showcase">
                 {productsToShow?.map((item, index) => (
                     <ProductPreview {...item} key={`product_shown_${index}`}/>
                 ))}

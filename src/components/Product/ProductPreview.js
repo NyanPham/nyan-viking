@@ -2,9 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBookmark } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
-import { useInView } from 'react-intersection-observer'
 import useOnScreen from '../../hooks/useOnScreen'
-import useTimeout from '../../hooks/useTimeout'
 
 export const COLOR_MAP = {
     red: 'bg-red-500',
@@ -34,7 +32,7 @@ export default function ProductPreview(product) {
     } = product
     
     const elementRef = useRef()
-    const inView = useOnScreen(elementRef)
+    const inView = useOnScreen(elementRef, '30px')
     const [animated, setAnimated] = useState(false)
 
     const endAnimation = () => {

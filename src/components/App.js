@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import Home from './Home'
 import { Routes, Route } from 'react-router-dom'
 import SignUp from './authentication/SignUp';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
 import { getUserProfileInfo, removeUser, setUser } from '../redux/actions/userActions';
@@ -21,6 +21,7 @@ import { getCart } from '../redux/actions/cartActions';
 import Cart from './Cart/Cart';
 import Checkout from './Cart/Checkout';
 import ToastContainer from './toast/ToastContainer';
+import WarningContainer from './toast/WarningContainer';
 
 export const PRODUCTS = [
 	{
@@ -134,6 +135,7 @@ function App() {
 	const documentRef = useRef()
 	const dispatch = useDispatch()
 
+	
 	useEffect(() => {
         dispatch(getProducts())
     }, [dispatch])
@@ -148,6 +150,7 @@ function App() {
 		}
 	})
 
+	const products = useSelector(state => state.productStatus.products)
 	return (
 		<div className="" ref={documentRef}>
 			<Routes>
@@ -162,7 +165,10 @@ function App() {
 				<Route path="/checkout" element={<Checkout />} />
 			</Routes>
 			{ReactDOM.createPortal(
-				<ToastContainer />,
+				<>
+					<ToastContainer />
+					<WarningContainer />
+				</>,
 				document.getElementById('root')
 			)}
 		</div>

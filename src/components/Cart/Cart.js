@@ -4,15 +4,11 @@ import { formatPrice } from '../../helper'
 import Policies from '../Policies'
 import ProductControl from '../Product/ProductControl'
 import { Link } from 'react-router-dom'
+import useCartTotal from '../../hooks/useCartTotal'
 
 export default function Cart() {
     const cartItems = useSelector(state => state.cartStatus.cartItems)
-    const products = useSelector(state => state.productStatus.products)
-    const total = cartItems.reduce((amount, item) => {
-        const product = products.find(product => product.code === item.code)
-        const itemTotal = product.salePercent > 0 ? item.selectedAmount * (product.price - (product.price * (product.salePercent / 100))) : item.selectedAmount * product.price
-        return amount += itemTotal
-    }, 0)
+    const total = useCartTotal()
 
     useEffect(() => {
         window.scrollTo({
@@ -41,7 +37,7 @@ export default function Cart() {
                                     <ProductControl key={`cart_item_${index}`} {...item}/>
                                 ))}
                             </div>
-                            <div className="grow-0 w-full h-max md:ml-auto md:w-1/2 bg-gray-900 lg:w-2/5">
+                            <div className="grow-0 w-full h-max md:ml-auto md:w-1/2 bg-gray-900 lg:w-2/5 lg:sticky lg:top-24">
                                 <div className="p-5">
                                     <h2 className="text-gray-100 text-xl">Your order:</h2>
                                     <p className='text-gray-300 text-sm'>VAT included</p>
