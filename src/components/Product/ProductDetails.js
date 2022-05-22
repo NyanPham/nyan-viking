@@ -8,6 +8,7 @@ import { formatPrice } from '../../helper'
 import { COLOR_MAP } from './ProductPreview'
 import { addToCart } from '../../redux/actions/cartActions'
 import { addToast } from '../../redux/actions/toastAction'
+import Countdown from '../Countdown'
 
 export default function ProductDetails() {
     const { productId } = useParams()
@@ -24,6 +25,8 @@ export default function ProductDetails() {
         size: '',
         amount: ''
     })
+
+    const priceDropToDate = new Date('2022-05-23')
 
     useEffect(() => {
         const product = products.find(product => product.docId === productId)
@@ -171,6 +174,7 @@ export default function ProductDetails() {
                     <p className="grow text-gray-900 font-bold cursor-pointer underline underline-offset-1 decoration-2 hover:text-gray-500 transition">Write a review</p>
                     <FontAwesomeIcon icon={faUpload}  className="text-gray-900 p-3 rounded-full bg-gray-200 cursor-pointer hover:bg-gray-100 hover:text-gray-500 transition" /> 
                 </div>
+                <Countdown toDate={priceDropToDate}/>
                 <form className="mt-10" onSubmit={handleAddToCart}>
                     <h3 className="uppercase">Choose your vibe:</h3>
                     <div className="flex flex-row gap-3 mt-3">

@@ -33,3 +33,11 @@ export function camelCaseToWords(camelCasedWords) {
 export function formatPrice(price, currency) {
     return `${new Intl.NumberFormat('en-IN', { style: 'currency', currency: currency }).format(price)} ${currency}`
 }
+
+export function convertMiliToTime(miliseconds) {
+    const seconds = Math.floor(miliseconds % 60)
+    const minutes = Math.floor((miliseconds / 60) % 60)
+    const hours = Math.floor(miliseconds / 3600)
+    
+    return { hours, minutes, seconds }
+}

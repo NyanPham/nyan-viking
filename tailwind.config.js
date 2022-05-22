@@ -7,6 +7,8 @@ module.exports = {
       animation: {
         fadeIn: 'fadeIn 1000ms ease-in-out forwards',
         slideIn: 'slideIn 1000ms ease-in-out forwards',
+        flipTop: 'flipTop 250ms ease-in',
+        flipBottom: 'flipBottom 250ms 250ms ease-out',
       },
       keyframes: {
         fadeIn: {
@@ -16,7 +18,13 @@ module.exports = {
         slideIn: {
           '0%': { transform: 'translateX(110%)' },
           '100%': { transform: 'translateX(0) '},
-        }
+        },
+        flipTop: {
+          '100%' : { transform: 'rotateX(90deg)' },
+        },
+        flipBottom: {
+          '100%' : { transform: 'rotateX(0deg)' },
+        } 
       }
     },
   },

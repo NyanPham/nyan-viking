@@ -85,6 +85,18 @@ body {
     min-height: 344px;
 }
 
+.rotate-x-90 {
+    transform: rotateX(90deg);
+}
+
+.rotate-x-0 {
+    transform: rotateX(0deg);
+}
+
+.animate-delay-250 {
+    animation-delay: 250ms;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
