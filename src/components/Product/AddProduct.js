@@ -7,6 +7,7 @@ import { addProduct } from '../../redux/actions/productActions'
 export const IMAGE_EXTENSIONS = ['image/jpeg', 'image/jpg', 'image/png']
 const numberFields = ['price', 'salePercent', 'amountInStock']
 // const arrayFields = ['colors', 'sizes', 'collections', 'tags']
+const dateFields = ['saleToDate']
 const initialProductData = {
     code: '',
     title: '',
@@ -19,6 +20,7 @@ const initialProductData = {
     collections: '',
     tags: '',
     amountInStock: 0,
+    saleToDate: ''
 }
 
 export default function AddProduct({ closeAddProductForm, addProductFormOpen }) {
@@ -30,6 +32,7 @@ export default function AddProduct({ closeAddProductForm, addProductFormOpen }) 
     const [dataChangeCount, setDataChangeCount] = useState(0)
     const [productData, setProductData] = useState(initialProductData)
 
+    console.log(/^\d{4}[./-]\d{2}[./-]\d{2}$/.test(productData['saleToDate']))
     const { loading, error, message } = useSelector(state => state.productStatus)
     const dispatch = useDispatch()
     const validateData = useCallback(() => {
@@ -40,6 +43,7 @@ export default function AddProduct({ closeAddProductForm, addProductFormOpen }) 
 
         isValid = fields.every(field => {
             if (numberFields.includes(field)) return true
+            if (dateFields.includes(field)) return /^\d{4}[./-]\d{2}[./-]\d{2}$/.test(productData[field])
             return productData[field] !== ''
         })
 
@@ -188,6 +192,19 @@ export default function AddProduct({ closeAddProductForm, addProductFormOpen }) 
                     value={productData.salePercent} 
                     onChange={handleInputChange} 
                     placeholder="Leave blank or 0 if not on sale" 
+                />
+            </div>
+            <div className="form-group mt-7">
+                <label className='form-label text-gray-700' htmlFor="product-sale-percent">Sale To Date:</label>
+                <input 
+                    className="form-input border-gray-600 text-gray-600" 
+                    type="text" 
+                    name="saleToDate" 
+                    min={0} 
+                    id="product-sale-to-date" 
+                    value={productData.saleToDate} 
+                    onChange={handleInputChange} 
+                    placeholder="yyyy-mm-dd" 
                 />
             </div>
             <div className="form-group mt-7">

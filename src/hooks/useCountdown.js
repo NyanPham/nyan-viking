@@ -15,7 +15,7 @@ export default function useCountdown(callback, interval, calculateTimeBetweenDat
             setTimeLeft(timeBetweenDates)
         }
     }, interval)
-
+    
     useEffect(() => {
         const time = convertMiliToTime(timeLeft)
         callback(time)

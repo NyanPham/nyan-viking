@@ -15,6 +15,7 @@ const ACTIONS = {
 }
 
 export function addProduct(product) {
+    console.log(product.saleToDate)
     return async (dispatch) => {
         try {
             dispatch({ type: ACTIONS.ADD_PRODUCT_START })
@@ -38,6 +39,7 @@ export function addProduct(product) {
                 tags: product.tags.split(', '),
                 amountInStock: parseFloat(product.amountInStock),
                 imageURL,
+                saleToDate: new Date(product.saleToDate),
                 visibility: 'public'
             }
             await addDoc(collection(db, 'products'), productToAdd)
