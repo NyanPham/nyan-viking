@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import Footer from './Footer';
 import Header from "./Header";
-import Hero from "./Hero";
+import Hero from "./Hero/Hero";
 import ImageGrid from './ImageGrid';
 import Policies from "./Policies";
 import ProductShowcase from './Product/ProductShowcase';
