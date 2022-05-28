@@ -37,7 +37,15 @@ export function formatPrice(price, currency) {
 export function convertMiliToTime(miliseconds) {
     const seconds = Math.floor(miliseconds % 60)
     const minutes = Math.floor((miliseconds / 60) % 60)
-    const hours = Math.floor(miliseconds / 3600)
-    
-    return { hours, minutes, seconds }
+    const hours = Math.floor((miliseconds / 3600) % 24)
+    const days = Math.floor(miliseconds / 86400)
+
+    return { hours, minutes, seconds, days }
+}
+
+export function checkValidTimesOfSale(saleToDate) {
+    const currentDate = new Date()
+    const saleDate = new Date(saleToDate)
+
+    return (saleDate - currentDate) / 1000  >= 0
 }

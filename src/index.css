@@ -44,7 +44,16 @@ body {
 
 .hero-container .slide-3 {
     background-image: url(assets/hiking-two.jpg);
-    
+    background-color: rgba(0,0,0,0.5);
+}
+
+.hero-container .slide-4 {
+    background-image: url(assets/snow-stand.jpg);
+    background-color: rgba(0,0,0,0.5);
+}
+
+.hero-container .slide-5 {
+    background-image: url(assets/far-hiking.jpg);
 }
 
 .swiper {

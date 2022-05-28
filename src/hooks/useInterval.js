@@ -7,11 +7,11 @@ export default function useInterval(callback, interval) {
     useEffect(() => {
         callbackRef.current = callback
     }, [callback])
-
+    
     const set = useCallback(() => {
         intervalRef.current = setInterval(() => callbackRef.current(), interval)
     }, [interval])
-
+    
     const clear = useCallback(() => {
         intervalRef.current && clearInterval(intervalRef.current)
     }, [])

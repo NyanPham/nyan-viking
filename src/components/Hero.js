@@ -18,6 +18,7 @@ export default function Hero() {
                 modules={[Navigation, Pagination, Autoplay, Lazy]}
                 slidesPerView={1}
                 spaceBetween={50}
+                speed={800}
                 navigation
                 autoplay
                 lazy
@@ -26,6 +27,8 @@ export default function Hero() {
                 <SwiperSlide><div className="slide-1 slide"></div></SwiperSlide>
                 <SwiperSlide><div className="slide-2 slide"></div></SwiperSlide>
                 <SwiperSlide><div className="slide-3 slide"></div></SwiperSlide>
+                <SwiperSlide><div className="slide-4 slide"></div></SwiperSlide>
+                <SwiperSlide><div className="slide-5 slide"></div></SwiperSlide>
             </Swiper>
         </div>
     )

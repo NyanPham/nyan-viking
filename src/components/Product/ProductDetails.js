@@ -1,14 +1,16 @@
 import { faStar, faUpload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCartShopping } from '@fortawesome/free-solid-svg-icons'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams, Link, useLocation } from 'react-router-dom'
-import { formatPrice } from '../../helper'
+import { checkValidTimesOfSale, formatPrice } from '../../helper'
 import { COLOR_MAP } from './ProductPreview'
 import { addToCart } from '../../redux/actions/cartActions'
 import { addToast } from '../../redux/actions/toastAction'
 import Countdown from '../Countdown/Countdown'
+import { showWarning } from '../../redux/actions/warningActions'
+import { updateCartItemAmount } from '../../redux/actions/cartActions'
 
 export default function ProductDetails() {
     const { productId } = useParams()
@@ -25,9 +27,17 @@ export default function ProductDetails() {
         size: '',
         amount: ''
     })
-    
+    const [isValidSaleToDate, setIsValidSaleToDate] = useState(false)
+    const amountInputRef = useRef()
+
     useEffect(() => {
         const product = products.find(product => product.docId === productId)
+        if (product?.saleToDate != null) {
+            setIsValidSaleToDate(() => {
+                return checkValidTimesOfSale(product.saleToDate)
+            })
+        }
+
         setCurrentProduct(product)
         window.scrollTo({
             top: 0,
@@ -75,22 +85,24 @@ export default function ProductDetails() {
     function handleAmountChange(e) {
         if (e.type === 'keydown') {
             let newValue
-            
-            if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return 
 
+            if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return
+            
             if (e.key === 'ArrowUp') newValue = parseInt(selectedAmount) + 1 
 
             if (e.key === 'ArrowDown') newValue = parseInt(selectedAmount) - 1
             
             if (newValue <= 0) return 
             if (newValue > currentProduct.amountInStock) return
-            setSelectedAmount(newValue || 0)
-            return 
+            return setSelectedAmount(newValue)
         }
 
-        if (isNaN(e.target.value)) return
-        if (parseInt(e.target.value) <= 0) return
-        setSelectedAmount(e.target.value)
+        if (!/^\d+$/g.test(e.target.value)) {
+            e.target.value = 1
+        }
+        
+        if (parseInt(e.target.value) <= 0 || parseInt(e.target.value) > currentProduct.amountInStock) return dispatch(showWarning(`You cannot add more than ${currentProduct.amountInStock} of ${currentProduct.title} to your cart`))
+        return setSelectedAmount(e.target.value)
     }
 
     function handleAmountClick(e) {
@@ -100,8 +112,8 @@ export default function ProductDetails() {
         if (action === 'add') newValue = parseInt(selectedAmount) + 1
 
         if (newValue <= 0) return 
-        if (newValue > currentProduct.amountInStock) return 
-        setSelectedAmount(newValue || 0)
+        if (newValue > currentProduct.amountInStock) return dispatch(showWarning(`You cannot add more than ${currentProduct.amountInStock} of ${currentProduct.title} to your cart`))
+        return setSelectedAmount(newValue)
     }
 
     function handleAddToCart(e) {
@@ -172,7 +184,8 @@ export default function ProductDetails() {
                     <p className="grow text-gray-900 font-bold cursor-pointer underline underline-offset-1 decoration-2 hover:text-gray-500 transition">Write a review</p>
                     <FontAwesomeIcon icon={faUpload}  className="text-gray-900 p-3 rounded-full bg-gray-200 cursor-pointer hover:bg-gray-100 hover:text-gray-500 transition" /> 
                 </div>
-                {currentProduct?.saleToDate && <Countdown toDate={new Date(currentProduct.saleToDate)}/>}
+                {isValidSaleToDate && <Countdown toDate={new Date(currentProduct.saleToDate)}/>}
+
                 <form className="mt-10" onSubmit={handleAddToCart}>
                     <h3 className="uppercase">Choose your vibe:</h3>
                     <div className="flex flex-row gap-3 mt-3">
@@ -187,9 +200,9 @@ export default function ProductDetails() {
                         ))}
                     </div>
                     <div className="flex flex-row mt-5">
-                        <button className="h-9 w-9 border border-gray-300 rounded-sm flex justify-center items-center text-xl" type="button" onClick={handleAmountClick} data-action="subtract">-</button>
-                        <input type="text" className="w-16 h-9 text-center border border-gray-300 rounded-sm flex justify-center items-center text-lg" value={selectedAmount} onChange={handleAmountChange} onKeyDown={handleAmountChange} />
-                        <button className="h-9 w-9 border border-gray-300 rounded-sm flex justify-center items-center text-xl" type="button" onClick={handleAmountClick} data-action="add">+</button>
+                        <button className="h-9 w-9 border border-gray-300 rounded-l-sm flex justify-center items-center text-xl" type="button" onClick={handleAmountClick} data-action="subtract">-</button>
+                        <input type="text" className="w-16 h-9 text-center border-t border-b border-gray-300 flex justify-center items-center text-lg" value={selectedAmount} onChange={handleAmountChange} onKeyDown={handleAmountChange} onKeyUp={handleAmountChange} ref={amountInputRef} />
+                        <button className="h-9 w-9 border border-gray-300 rounded-r-sm flex justify-center items-center text-xl" type="button" onClick={handleAmountClick} data-action="add">+</button>
                     </div>
                     <div className="flex flex-row mt-5 gap-2">
                         {currentUser?.uid 

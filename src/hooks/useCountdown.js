@@ -7,7 +7,7 @@ export default function useCountdown(callback, interval, calculateTimeBetweenDat
         const currentDate = new Date()
         return calculateTimeBetweenDates(currentDate, toDate)
     })
-
+    
     useInterval(() => {
         const currentDate = new Date()
         const timeBetweenDates = calculateTimeBetweenDates(currentDate, toDate)

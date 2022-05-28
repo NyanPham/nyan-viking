@@ -80,7 +80,7 @@ export default function AddProduct({ closeAddProductForm, addProductFormOpen }) 
             setLoadingImage(false)
             setDataChangeCount(prevCount => prevCount + 1)
         }
-
+        
         fileReader.readAsDataURL(imageFile)
     }
 
