@@ -10,7 +10,8 @@ import { addToCart } from '../../redux/actions/cartActions'
 import { addToast } from '../../redux/actions/toastAction'
 import Countdown from '../Countdown/Countdown'
 import { showWarning } from '../../redux/actions/warningActions'
-import { updateCartItemAmount } from '../../redux/actions/cartActions'
+import useAmountWithUpdate, { ACTIONS as AMOUNT_ACTIONS } from '../../hooks/useAmountWithUpdate'
+
 
 export default function ProductDetails() {
     const { productId } = useParams()
@@ -21,7 +22,7 @@ export default function ProductDetails() {
     const [currentProduct, setCurrentProduct] = useState()
     const [selectedColor, setSelectedColor] = useState()
     const [selectedSize, setSelectedSize] = useState()
-    const [selectedAmount, setSelectedAmount] = useState(1)
+    const [selectedAmount, dispatchAmount] = useAmountWithUpdate(1)
     const [errors, setErrors] = useState({
         color: '',
         size: '',
@@ -83,37 +84,29 @@ export default function ProductDetails() {
     }, [message, currentProduct, dispatch])
 
     function handleAmountChange(e) {
-        if (e.type === 'keydown') {
-            let newValue
-
-            if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return
-            
-            if (e.key === 'ArrowUp') newValue = parseInt(selectedAmount) + 1 
-
-            if (e.key === 'ArrowDown') newValue = parseInt(selectedAmount) - 1
-            
-            if (newValue <= 0) return 
-            if (newValue > currentProduct.amountInStock) return
-            return setSelectedAmount(newValue)
-        }
-
-        if (!/^\d+$/g.test(e.target.value)) {
-            e.target.value = 1
-        }
-        
-        if (parseInt(e.target.value) <= 0 || parseInt(e.target.value) > currentProduct.amountInStock) return dispatch(showWarning(`You cannot add more than ${currentProduct.amountInStock} of ${currentProduct.title} to your cart`))
-        return setSelectedAmount(e.target.value)
+        dispatchAmount({
+            type: AMOUNT_ACTIONS.INPUT_CHANGE,
+            payload: {
+                e: e,
+                dispatch: dispatch,
+                amountInStock: currentProduct.amountInStock,
+                title: currentProduct.title,
+                showWarning: showWarning
+            }
+        })
     }
 
     function handleAmountClick(e) {
-        const action = e.target.dataset.action
-        let newValue
-        if (action === 'subtract') newValue = parseInt(selectedAmount) - 1
-        if (action === 'add') newValue = parseInt(selectedAmount) + 1
-
-        if (newValue <= 0) return 
-        if (newValue > currentProduct.amountInStock) return dispatch(showWarning(`You cannot add more than ${currentProduct.amountInStock} of ${currentProduct.title} to your cart`))
-        return setSelectedAmount(newValue)
+        dispatchAmount({
+            type: AMOUNT_ACTIONS.BUTTON_CLICK,
+            payload: {
+                e: e,
+                dispatch: dispatch,
+                amountInStock: currentProduct.amountInStock,
+                title: currentProduct.title,
+                showWarning: showWarning
+            }
+        })
     }
 
     function handleAddToCart(e) {
@@ -201,7 +194,7 @@ export default function ProductDetails() {
                     </div>
                     <div className="flex flex-row mt-5">
                         <button className="h-9 w-9 border border-gray-300 rounded-l-sm flex justify-center items-center text-xl" type="button" onClick={handleAmountClick} data-action="subtract">-</button>
-                        <input type="text" className="w-16 h-9 text-center border-t border-b border-gray-300 flex justify-center items-center text-lg" value={selectedAmount} onChange={handleAmountChange} onKeyDown={handleAmountChange} onKeyUp={handleAmountChange} ref={amountInputRef} />
+                        <input type="text" className="w-16 h-9 text-center border-t border-b border-gray-300 flex justify-center items-center text-lg" value={selectedAmount} onChange={handleAmountChange} onKeyDown={handleAmountChange} ref={amountInputRef} />
                         <button className="h-9 w-9 border border-gray-300 rounded-r-sm flex justify-center items-center text-xl" type="button" onClick={handleAmountClick} data-action="add">+</button>
                     </div>
                     <div className="flex flex-row mt-5 gap-2">
