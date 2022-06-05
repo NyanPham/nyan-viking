@@ -1,6 +1,6 @@
-import React, { lazy } from 'react'
+import React from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { Navigation, Pagination, Autoplay, Lazy } from 'swiper'
+import { Navigation, Pagination, Autoplay } from 'swiper'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
@@ -15,7 +15,7 @@ export default function Hero() {
     return (
         <div className="hero-container relative">
             <Swiper
-                modules={[Navigation, Pagination, Autoplay, Lazy]}
+                modules={[Navigation, Pagination, Autoplay]}
                 slidesPerView={1}
                 spaceBetween={0}
                 speed={800}

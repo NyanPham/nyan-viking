@@ -19,7 +19,7 @@ export default function Header({ documentRef }) {
     const { ref: headerRef, inView } = useInView({
         threshold: 0.5
     })
-
+    
     useEffect(() => {
         if (documentRef.current) {
             documentRef.current.addEventListener('click', handleOutClick)
@@ -88,9 +88,9 @@ export default function Header({ documentRef }) {
             </div>
 
             {/* fixed header */}
-            <div className={`${inView ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-1'} py-3 px-12 flex flex-row justify-between items-center bg-white fixed top-0 left-0 w-full z-20 transform transition shadow-md`}>
+            <div className={`${inView ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-1'} py-1 px-12 flex flex-row justify-between items-center bg-white fixed top-0 left-0 w-full z-20 transform transition shadow-md`}>
                 <div className="flex flex-row justify-start items-center gap-7">
-                    <Link to="/" className="w-32 h-12 block">
+                    <Link to="/" className="w-24 h-10 block">
                         <img src={BlueNyanLogo} alt="Nyan Viking Logo" className="max-h-full max-w-full" />
                     </Link>
                     <nav>

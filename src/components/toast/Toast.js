@@ -30,7 +30,7 @@ export default function Toast(props) {
         clear()
         setInPage(false)
     }
-
+    
     useEffect(() => {
         if (inPage && !shouldHide) {
             const progressBar = (time) => {
