@@ -12,6 +12,8 @@ import Countdown from '../Countdown/Countdown'
 import { showWarning } from '../../redux/actions/warningActions'
 import useAmountWithUpdate, { ACTIONS as AMOUNT_ACTIONS } from '../../hooks/useAmountWithUpdate'
 import footwearSizeChart from '../../assets/footwear-size.jpg'
+import { useLocalStorage } from '../../hooks/useStorage'
+import { useRecentlyViewed } from '../../contexts/RecentlyViewedContextProvider'
 
 const SIZE_CHARTS_MAP = {
     footwear: footwearSizeChart
@@ -34,7 +36,8 @@ export default function ProductDetails() {
     })
     const [isValidSaleToDate, setIsValidSaleToDate] = useState(false)
     const amountInputRef = useRef()
-    
+    const { recentlyViewed, setRecentlyViewed } = useRecentlyViewed()
+
     useEffect(() => {
         const product = products.find(product => product.docId === productId)
         if (product?.saleToDate != null) {
@@ -86,6 +89,15 @@ export default function ProductDetails() {
             dispatch(addToast(toast))
         }
     }, [message, currentProduct, dispatch])
+
+    useEffect(() => {
+        if (currentProduct == null) return  
+        const viewedCurrentProduct = recentlyViewed.find(item => item?.title === currentProduct.title) 
+        if (viewedCurrentProduct == null) {
+            setRecentlyViewed(prevRecentlyViewed => [...prevRecentlyViewed, currentProduct])
+        }
+        
+    }, [currentProduct])
 
     function handleAmountChange(e) {
         dispatchAmount({
@@ -155,16 +167,20 @@ export default function ProductDetails() {
                 <div className="w-full h-96 flex justify-center items-center bg-gray-100/50">
                     <img src={currentProduct?.imageURL} alt={currentProduct?.title} className="max-h-full object-contain" />
                 </div>
+                <div className='mt-12'>
+                    <h2 className="font-semibold text-2xl text-center">Description</h2>
+                    <p className="text-md leading-8 mt-4">
+                        {currentProduct?.description}{' '}
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta repudiandae libero corrupti quam consequuntur, iste rem facilis nihil quibusdam iusto, beatae animi possimus aut, molestias dignissimos sapiente consequatur doloribus inventore.
+                        Dolore accusamus et molestias laboriosam cum nisi, perferendis veniam officiis, corporis magni asperiores a. Odit, neque tenetur doloribus doloremque odio corrupti voluptate et vel in maiores dolor alias autem nostrum.
+                    </p>
+                </div>
                 <div className='mt-12'> 
                     <h2 className="font-semibold text-2xl text-center">Size Chart</h2>
                     <img src={SIZE_CHARTS_MAP[currentProduct?.category]} alt="Size Chart" />
                 </div>
-                <div className='mt-12'>
-                    <h2 className="font-semibold text-2xl text-center">Description</h2>
-                    {currentProduct?.description}
-                </div>
             </div>
-            <div className="w-2/5 sticky h-max top-0 left-0">
+            <div className="w-2/5 sticky h-max top-20 left-0">
                 <h2 className="text-base font-medium uppercase text-gray-500 tracking-wide">{currentProduct?.code}</h2>
                 <h1 className="text-2xl font-semibold uppercase text-gray-900 tracking-wider">{currentProduct?.title}</h1>
                 {currentProduct?.salePercent > 0

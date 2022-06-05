@@ -22,6 +22,8 @@ import Cart from './Cart/Cart';
 import Checkout from './Cart/Checkout';
 import ToastContainer from './toast/ToastContainer';
 import WarningContainer from './toast/WarningContainer';
+import RecentlyViewed from './Popups/RecentlyViewed';
+import RecentlyViewedContextProvider from '../contexts/RecentlyViewedContextProvider';
 
 export const PRODUCTS = [
 	{
@@ -153,24 +155,27 @@ function App() {
 	const products = useSelector(state => state.productStatus.products)
 	return (
 		<div className="" ref={documentRef}>
-			<Routes>
-				<Route path="/" element={<Home documentRef={documentRef} />} />
-				<Route path="/signup" element={<SignUp />} />
-				<Route path="/login" element={<LogIn />} />
-				<Route path="/forgot-password" element={<ForgotPassword />} />
-				<Route path="/update-profile" element={<UpdateProfile />} />
-				<Route path="/profile" element={<Profile />} />
-				<Route path="/product/:productId" element={<><Header documentRef={documentRef}/><ProductDetails /><Footer /></>} />
-				<Route path="/cart" element={<><Header documentRef={documentRef} /><Cart /><Footer /> </>} />
-				<Route path="/checkout" element={<Checkout />} />
-			</Routes>
-			{ReactDOM.createPortal(
-				<>
-					<ToastContainer />
-					<WarningContainer />
-				</>,
-				document.getElementById('root')
-			)}
+			<RecentlyViewedContextProvider>
+				<Routes>
+					<Route path="/" element={<Home documentRef={documentRef} />} />
+					<Route path="/signup" element={<SignUp />} />
+					<Route path="/login" element={<LogIn />} />
+					<Route path="/forgot-password" element={<ForgotPassword />} />
+					<Route path="/update-profile" element={<UpdateProfile />} />
+					<Route path="/profile" element={<Profile />} />
+					<Route path="/product/:productId" element={<><Header documentRef={documentRef}/><ProductDetails /><Footer /></>} />
+					<Route path="/cart" element={<><Header documentRef={documentRef} /><Cart /><Footer /> </>} />
+					<Route path="/checkout" element={<Checkout />} />
+				</Routes>
+				{ReactDOM.createPortal(
+					<>
+						<ToastContainer />
+						<WarningContainer />
+						<RecentlyViewed />
+					</>,
+					document.getElementById('root')
+				)}
+			</RecentlyViewedContextProvider>
 		</div>
 	);
 }
