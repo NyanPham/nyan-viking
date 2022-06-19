@@ -11,7 +11,6 @@ import HeroSlide from './HeroSlide'
 const IMAGE_NAMES_ARRAY = ['hiking-forest.jpg', 'hiking-snow.jpg', 'hiking-two.jpg', 'snow-stand.jpg', 'far-hiking.jpg']
 
 export default function Hero() {
-    
     return (
         <div className="hero-container relative">
             <Swiper
@@ -21,7 +20,6 @@ export default function Hero() {
                 speed={800}
                 navigation
                 autoplay
-                lazy
                 pagination={{ clickable: true }}
             >
                 {IMAGE_NAMES_ARRAY.map((imageName, index) => (

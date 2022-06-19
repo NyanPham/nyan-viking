@@ -11,6 +11,23 @@ body {
     position: relative;
 }
 
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
 #toast-container {
     position: absolute;
     top: 0;
@@ -104,6 +121,18 @@ body {
 
 .animate-delay-250 {
     animation-delay: 250ms;
+}
+
+[data-recently-viewed] .swiper {
+    --horizontal-padding: 2rem;
+    --vertical-padding: .5rem;
+
+    padding: var(--vertical-padding) var(--horizontal-padding);
+}
+
+[data-recently-viewed] .swiper-button-prev,
+[data-recently-viewed] .swiper-button-next {
+    --swiper-theme-color: #333;
 }
 
 @tailwind base;

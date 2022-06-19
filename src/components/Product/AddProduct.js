@@ -20,7 +20,7 @@ const initialProductData = {
     collections: '',
     tags: '',
     amountInStock: 0,
-    saleToDate: ''
+    saleToDate: '',
 }
 
 export default function AddProduct({ closeAddProductForm, addProductFormOpen }) {
@@ -32,8 +32,7 @@ export default function AddProduct({ closeAddProductForm, addProductFormOpen }) 
     const [dataChangeCount, setDataChangeCount] = useState(0)
     const [productData, setProductData] = useState(initialProductData)
 
-    console.log(/^\d{4}[./-]\d{2}[./-]\d{2}$/.test(productData['saleToDate']))
-    const { loading, error, message } = useSelector(state => state.productStatus)
+    const { loading, error, message } = useSelector((state) => state.productStatus)
     const dispatch = useDispatch()
     const validateData = useCallback(() => {
         let isValid = true
@@ -41,7 +40,7 @@ export default function AddProduct({ closeAddProductForm, addProductFormOpen }) 
 
         if (image == null) return setDataValid(false)
 
-        isValid = fields.every(field => {
+        isValid = fields.every((field) => {
             if (numberFields.includes(field)) return true
             if (dateFields.includes(field)) return /^\d{4}[./-]\d{2}[./-]\d{2}$/.test(productData[field])
             return productData[field] !== ''
@@ -68,19 +67,19 @@ export default function AddProduct({ closeAddProductForm, addProductFormOpen }) 
     function handleAddImage(e) {
         e.preventDefault()
         const imageFile = e.target.files[0]
-        if (!IMAGE_EXTENSIONS.includes(imageFile.type)) return alert('Please select a valid image!') 
+        if (!IMAGE_EXTENSIONS.includes(imageFile.type)) return alert('Please select a valid image!')
         setLoadingImage(true)
         const fileReader = new FileReader()
-        
+
         fileReader.onload = () => {
             const imageURL = fileReader.result
-            if (!imageURL) return 
+            if (!imageURL) return
             setImageURL(imageURL)
             setImage(imageFile)
             setLoadingImage(false)
-            setDataChangeCount(prevCount => prevCount + 1)
+            setDataChangeCount((prevCount) => prevCount + 1)
         }
-        
+
         fileReader.readAsDataURL(imageFile)
     }
 
@@ -88,10 +87,10 @@ export default function AddProduct({ closeAddProductForm, addProductFormOpen }) 
         setProductData((prevData) => {
             return {
                 ...prevData,
-                [e.target.name]: e.target.value
+                [e.target.name]: e.target.value,
             }
         })
-        setDataChangeCount(prevCount => prevCount + 1)
+        setDataChangeCount((prevCount) => prevCount + 1)
     }
 
     function handleAddProduct(e) {
@@ -99,147 +98,192 @@ export default function AddProduct({ closeAddProductForm, addProductFormOpen }) 
         if (!dataValid) return
         const product = {
             ...productData,
-            image
+            image,
         }
         dispatch(addProduct(product))
     }
 
     return (
-        <form className="h-4/5 w-1/3 py-7 px-10 bg-white overflow-y-auto rounded-sm relative" id="add-product-form" onSubmit={handleAddProduct}>
-            <button className="absolute top-3 right-3 text-xl text-gray-700 hover:text-gray-500 transition" type="button" onClick={closeAddProductForm}>&times;</button>
+        <form
+            className="h-4/5 w-1/3 py-7 px-10 bg-white overflow-y-auto rounded-sm relative"
+            id="add-product-form"
+            onSubmit={handleAddProduct}
+        >
+            <button
+                className="absolute top-3 right-3 text-xl text-gray-700 hover:text-gray-500 transition"
+                type="button"
+                onClick={closeAddProductForm}
+            >
+                &times;
+            </button>
             <h2 className="text-2xl font-semibold text-gray-800 tracking-wide text-center">Add Product</h2>
             {message && <p className="success-alert">{message}</p>}
             {error && <p className="error-alert">{error}</p>}
             <div className="form-group mt-7">
-                <label className='form-label text-gray-700' htmlFor="product-code">Code:</label>
-                <input 
-                    className="form-input border-gray-600 text-gray-600" 
-                    type="text" 
-                    name="code" 
-                    id="product-code" 
-                    value={productData.code} 
+                <label className="form-label text-gray-700" htmlFor="product-code">
+                    Code:
+                </label>
+                <input
+                    className="form-input border-gray-600 text-gray-600"
+                    type="text"
+                    name="code"
+                    id="product-code"
+                    value={productData.code}
                     placeholder="e.g.JK-GRT"
-                    onChange={handleInputChange}  
+                    onChange={handleInputChange}
                 />
             </div>
             <div className="form-group mt-7">
-                <label className='form-label text-gray-700' htmlFor="product-title">Title:</label>
-                <input 
-                    className="form-input border-gray-600 text-gray-600" 
-                    type="text" 
-                    name="title" 
-                    id="product-title" 
-                    value={productData.title} 
+                <label className="form-label text-gray-700" htmlFor="product-title">
+                    Title:
+                </label>
+                <input
+                    className="form-input border-gray-600 text-gray-600"
+                    type="text"
+                    name="title"
+                    id="product-title"
+                    value={productData.title}
                     placeholder="e.g.Short Sleeve T-shirt"
-                    onChange={handleInputChange}  
+                    onChange={handleInputChange}
                 />
             </div>
             <div className="form-group mt-7">
-                <label className='form-label text-gray-700' htmlFor="product-description">Description:</label>
-                <input 
-                    className="form-input border-gray-600 text-gray-600" 
-                    type="text" 
-                    name="description" 
-                    id="product-description" 
-                    value={productData.description} 
+                <label className="form-label text-gray-700" htmlFor="product-description">
+                    Description:
+                </label>
+                <input
+                    className="form-input border-gray-600 text-gray-600"
+                    type="text"
+                    name="description"
+                    id="product-description"
+                    value={productData.description}
                     placeholder="e.g.This product is the best for winter"
-                    onChange={handleInputChange} 
+                    onChange={handleInputChange}
                 />
             </div>
             <div className="form-group mt-7">
-                <label className='form-label text-gray-700' htmlFor="product_image">Image:
+                <label className="form-label text-gray-700" htmlFor="product_image">
+                    Image:
                     <span className="font-normal ml-2">{image?.name || ''}</span>
                 </label>
-                <div className={`${loadingImage || !addProductFormOpen ? 'pointer-events-none' : 'pointer-events-auto'} w-full h-36 border border-gray-600 flex justify-center items-center overflow-clip cursor-pointer group hover:border-gray-400 transition`} onClick={handleAddImageClick}>
-                    {imageURL
-                        ? (<img src={imageURL} alt={image.name} className="max-w-full max-h-full object-cover object-center"/>)
-                        : loadingImage && !image
-                            ? <FontAwesomeIcon icon={faSpinner} className="text-3xl text-sky-600 group-hover:text-gray-400 transition animate-spin" />
-                            : <FontAwesomeIcon icon={faFileArrowUp} className="text-3xl text-gray-600 group-hover:text-gray-400 transition" />
-                    }
+                <div
+                    className={`${
+                        loadingImage || !addProductFormOpen ? 'pointer-events-none' : 'pointer-events-auto'
+                    } w-full h-36 border border-gray-600 flex justify-center items-center overflow-clip cursor-pointer group hover:border-gray-400 transition`}
+                    onClick={handleAddImageClick}
+                >
+                    {imageURL ? (
+                        <img
+                            src={imageURL}
+                            alt={image.name}
+                            className="max-w-full max-h-full object-cover object-center"
+                        />
+                    ) : loadingImage && !image ? (
+                        <FontAwesomeIcon
+                            icon={faSpinner}
+                            className="text-3xl text-sky-600 group-hover:text-gray-400 transition animate-spin"
+                        />
+                    ) : (
+                        <FontAwesomeIcon
+                            icon={faFileArrowUp}
+                            className="text-3xl text-gray-600 group-hover:text-gray-400 transition"
+                        />
+                    )}
                 </div>
-                <input 
-                    className="form-input" 
-                    type="file" 
-                    name="image" 
-                    id="product-image" 
-                    hidden={true} 
-                    onChange={handleAddImage} 
-                    ref={imageInputRef} 
+                <input
+                    className="form-input"
+                    type="file"
+                    name="image"
+                    id="product-image"
+                    hidden={true}
+                    onChange={handleAddImage}
+                    ref={imageInputRef}
                 />
             </div>
             <div className="form-group mt-7">
-                <label className='form-label text-gray-700' htmlFor="product-price">Price:</label>
-                <input 
-                    className="form-input border-gray-600 text-gray-600" 
-                    type="number" 
-                    name="price" 
-                    min={0} 
-                    id="product-price" 
-                    value={productData.price} 
+                <label className="form-label text-gray-700" htmlFor="product-price">
+                    Price:
+                </label>
+                <input
+                    className="form-input border-gray-600 text-gray-600"
+                    type="number"
+                    name="price"
+                    min={0}
+                    id="product-price"
+                    value={productData.price}
                     placeholder="Leave blank or 0 if free"
-                    onChange={handleInputChange} 
+                    onChange={handleInputChange}
                 />
             </div>
             <div className="form-group mt-7">
-                <label className='form-label text-gray-700' htmlFor="product-sale-percent">Sale Percent:</label>
-                <input 
-                    className="form-input border-gray-600 text-gray-600" 
-                    type="number" 
-                    name="salePercent" 
-                    min={0} 
-                    id="product-sale-percent" 
-                    value={productData.salePercent} 
-                    onChange={handleInputChange} 
-                    placeholder="Leave blank or 0 if not on sale" 
+                <label className="form-label text-gray-700" htmlFor="product-sale-percent">
+                    Sale Percent:
+                </label>
+                <input
+                    className="form-input border-gray-600 text-gray-600"
+                    type="number"
+                    name="salePercent"
+                    min={0}
+                    id="product-sale-percent"
+                    value={productData.salePercent}
+                    onChange={handleInputChange}
+                    placeholder="Leave blank or 0 if not on sale"
                 />
             </div>
             <div className="form-group mt-7">
-                <label className='form-label text-gray-700' htmlFor="product-sale-percent">Sale To Date:</label>
-                <input 
-                    className="form-input border-gray-600 text-gray-600" 
-                    type="text" 
-                    name="saleToDate" 
-                    min={0} 
-                    id="product-sale-to-date" 
-                    value={productData.saleToDate} 
-                    onChange={handleInputChange} 
-                    placeholder="yyyy-mm-dd" 
+                <label className="form-label text-gray-700" htmlFor="product-sale-percent">
+                    Sale To Date:
+                </label>
+                <input
+                    className="form-input border-gray-600 text-gray-600"
+                    type="text"
+                    name="saleToDate"
+                    min={0}
+                    id="product-sale-to-date"
+                    value={productData.saleToDate}
+                    onChange={handleInputChange}
+                    placeholder="yyyy-mm-dd"
                 />
             </div>
             <div className="form-group mt-7">
-                <label className='form-label text-gray-700' htmlFor="product-colors">Colors:</label>
-                <input 
-                    className="form-input border-gray-600 text-gray-600" 
-                    type="text" 
-                    name="colors" 
-                    id="product-colors" 
-                    value={productData.colors} 
-                    onChange={handleInputChange} 
-                    placeholder="e.g.blue, green, sky" 
+                <label className="form-label text-gray-700" htmlFor="product-colors">
+                    Colors:
+                </label>
+                <input
+                    className="form-input border-gray-600 text-gray-600"
+                    type="text"
+                    name="colors"
+                    id="product-colors"
+                    value={productData.colors}
+                    onChange={handleInputChange}
+                    placeholder="e.g.blue, green, sky"
                 />
             </div>
             <div className="form-group mt-7">
-                <label className='form-label text-gray-700' htmlFor="product-sizes">Sizes:</label>
-                <input 
-                    className="form-input border-gray-600 text-gray-600" 
-                    type="text" 
-                    name="sizes" 
-                    id="product-sizes" 
-                    value={productData.sizes} 
-                    onChange={handleInputChange} 
-                    placeholder="e.g.S, M, L" 
+                <label className="form-label text-gray-700" htmlFor="product-sizes">
+                    Sizes:
+                </label>
+                <input
+                    className="form-input border-gray-600 text-gray-600"
+                    type="text"
+                    name="sizes"
+                    id="product-sizes"
+                    value={productData.sizes}
+                    onChange={handleInputChange}
+                    placeholder="e.g.S, M, L"
                 />
             </div>
             <div className="form-group mt-7">
-                <label className='form-label text-gray-700' htmlFor="product-category">Category:</label>
-                <select 
-                    className="form-input border-gray-600 text-gray-600" 
-                    type="text" 
-                    name="category" 
-                    id="product-category" 
+                <label className="form-label text-gray-700" htmlFor="product-category">
+                    Category:
+                </label>
+                <select
+                    className="form-input border-gray-600 text-gray-600"
+                    type="text"
+                    name="category"
+                    id="product-category"
                     value={productData.category}
-                    onChange={handleInputChange} 
+                    onChange={handleInputChange}
                 >
                     <option value="top">Top</option>
                     <option value="bottom">Bottom</option>
@@ -247,48 +291,61 @@ export default function AddProduct({ closeAddProductForm, addProductFormOpen }) 
                     <option value="underwear">Underwear</option>
                     <option value="outerwear">Outerwear</option>
                     <option value="footwear">Footwear</option>
+                    <option value="backpack">Backpack</option>
                     <option value="accessories">Accessories</option>
                     <option value="else">Else</option>
                 </select>
             </div>
             <div className="form-group mt-7">
-                <label className='form-label text-gray-700' htmlFor="product-collections">Collections:</label>
-                <input 
-                    className="form-input border-gray-600 text-gray-600" 
-                    type="text" 
-                    name="collections" 
-                    id="product-collections" 
-                    value={productData.collections} 
+                <label className="form-label text-gray-700" htmlFor="product-collections">
+                    Collections:
+                </label>
+                <input
+                    className="form-input border-gray-600 text-gray-600"
+                    type="text"
+                    name="collections"
+                    id="product-collections"
+                    value={productData.collections}
                     placeholder="e.g.New Arrival, Winter"
-                    onChange={handleInputChange}  
+                    onChange={handleInputChange}
                 />
             </div>
             <div className="form-group mt-7">
-                <label className='form-label text-gray-700' htmlFor="product-tags">Tags:</label>
-                <input 
-                    className="form-input border-gray-600 text-gray-600" 
-                    type="text" 
-                    name="tags" 
-                    id="product-tags" 
-                    value={productData.tags} 
-                    onChange={handleInputChange} 
-                    placeholder="e.g.shoes, short sleeve" 
+                <label className="form-label text-gray-700" htmlFor="product-tags">
+                    Tags:
+                </label>
+                <input
+                    className="form-input border-gray-600 text-gray-600"
+                    type="text"
+                    name="tags"
+                    id="product-tags"
+                    value={productData.tags}
+                    onChange={handleInputChange}
+                    placeholder="e.g.shoes, short sleeve"
                 />
             </div>
             <div className="form-group mt-7">
-                <label className='form-label text-gray-700' htmlFor="product-instock">Number in stock:</label>
-                <input 
-                    className="form-input border-gray-600 text-gray-600" 
-                    type="number" 
+                <label className="form-label text-gray-700" htmlFor="product-instock">
+                    Number in stock:
+                </label>
+                <input
+                    className="form-input border-gray-600 text-gray-600"
+                    type="number"
                     name="amountInStock"
-                    min={0} 
-                    id="product-instock" 
-                    value={productData.amountInStock} 
-                    onChange={handleInputChange} 
-                    placeholder="Leave blank or 0 for unavailability" 
+                    min={0}
+                    id="product-instock"
+                    value={productData.amountInStock}
+                    onChange={handleInputChange}
+                    placeholder="Leave blank or 0 for unavailability"
                 />
             </div>
-            <button type="submit" className="submit-btn mt-7 disabled:pointer-events-none disabled:bg-gray-300 disabled:text-gray-500" disabled={!dataValid | loading}>Add</button>
+            <button
+                type="submit"
+                className="submit-btn mt-7 disabled:pointer-events-none disabled:bg-gray-300 disabled:text-gray-500"
+                disabled={!dataValid | loading}
+            >
+                Add
+            </button>
         </form>
     )
 }
